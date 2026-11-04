@@ -1,0 +1,34 @@
+# Databricks MCP — SecureMCPProxy
+
+Wraps the Databricks managed MCP endpoint in `DATABRICKS_MCP_URL` over HTTPS with a bearer token. MACAW policy is enforced at the proxy before any call reaches the upstream.
+
+## What it needs
+
+- The MACAW client installed in a Python virtual environment, plus `pip install "macaw-adapters[mcp-proxy]"`, and `MACAW_HOME` set to the MACAW client folder.
+
+Environment variables:
+
+- `DATABRICKS_MCP_URL`  — required.
+- `DATABRICKS_TOKEN`  — required.
+
+`DATABRICKS_MCP_URL` is the managed MCP URL of your workspace, for example `https://<workspace>/api/2.0/mcp/sql`. `DATABRICKS_TOKEN` is a workspace personal access token.
+
+## Setup
+
+```bash
+export DATABRICKS_MCP_URL="..."
+export DATABRICKS_TOKEN="..."
+export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+python mcp_databricks_proxy.py
+```
+
+Register with Claude Code:
+
+```bash
+claude mcp add databricks-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+  export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+  export DATABRICKS_MCP_URL="..." && \
+  export DATABRICKS_TOKEN="..." && \
+  python /path/to/mcp_databricks_proxy.py'
+```

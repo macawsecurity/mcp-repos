@@ -1,0 +1,42 @@
+# Qdrant MCP — SecureMCPProxy
+
+Wraps `uvx --python 3.12 mcp-server-qdrant` over stdio. MACAW policy is enforced at the proxy before any call reaches the upstream.
+
+## What it needs
+
+- The MACAW client installed in a Python virtual environment, plus `pip install "macaw-adapters[mcp-proxy]"`, and `MACAW_HOME` set to the MACAW client folder.
+- `uvx` on `PATH` (from `uv`). The upstream runs on Python 3.12.
+
+Environment variables:
+
+- `QDRANT_URL`
+- `QDRANT_API_KEY`
+- `QDRANT_LOCAL_PATH`
+- `COLLECTION_NAME`
+- `EMBEDDING_MODEL`
+- `QDRANT_SEARCH_LIMIT`
+- `QDRANT_READ_ONLY`
+
+Set `QDRANT_URL` (with `QDRANT_API_KEY` if the server needs one) or `QDRANT_LOCAL_PATH`. Use one of the two.
+
+## Setup
+
+```bash
+export QDRANT_URL="..."
+export QDRANT_API_KEY="..."
+export COLLECTION_NAME="..."
+export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+python proxy_qdrant.py
+```
+
+Register with Claude Code:
+
+```bash
+claude mcp add qdrant-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+  export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+  export QDRANT_URL="..." && \
+  export QDRANT_API_KEY="..." && \
+  export COLLECTION_NAME="..." && \
+  python /path/to/proxy_qdrant.py'
+```

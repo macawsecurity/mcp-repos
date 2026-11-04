@@ -1,0 +1,53 @@
+"""
+grafana-proxy -> SecureMCPProxy, served natively.
+
+Prereq:
+    export GRAFANA_SERVICE_ACCOUNT_TOKEN="..."
+    export GRAFANA_URL="..."
+    export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+Run:
+    python proxy_grafana.py
+
+Claude Code:
+    claude mcp add grafana-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+      export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+      export GRAFANA_URL="..." && \
+      export GRAFANA_SERVICE_ACCOUNT_TOKEN="..." && \
+      python /path/to/proxy_grafana.py'
+"""
+
+import os
+import sys
+import logging
+from macaw_adapters.mcp import SecureMCPProxy
+
+
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
+
+grafana_url = os.environ.get("GRAFANA_URL")
+token = os.environ.get("GRAFANA_SERVICE_ACCOUNT_TOKEN")
+if not grafana_url or not token:
+    raise ValueError(
+        "Set GRAFANA_URL (e.g. http://localhost:3000) and "
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN (glsa_...)"
+    )
+
+
+proxy = SecureMCPProxy(
+    app_name="grafana-proxy",
+    command=[
+        "docker", "run", "--rm", "-i", "--network=host",
+        "-e", "GRAFANA_URL",
+        "-e", "GRAFANA_SERVICE_ACCOUNT_TOKEN",
+        "grafana/mcp-grafana", "-t", "stdio",
+    ],
+    env={
+        "PATH": os.environ["PATH"],
+        "GRAFANA_URL": grafana_url,
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": token,
+    },
+)
+logging.info("grafana-proxy: %d tools; serving native clients", len(proxy.list_tools()))
+
+proxy.run()

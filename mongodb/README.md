@@ -1,0 +1,39 @@
+# MongoDB MCP — SecureMCPProxy
+
+Wraps `mongodb/mongodb-mcp-server` in Docker over stdio. MACAW policy is enforced at the proxy before any call reaches the upstream.
+
+## What it needs
+
+- The MACAW client installed in a Python virtual environment, plus `pip install "macaw-adapters[mcp-proxy]"`, and `MACAW_HOME` set to the MACAW client folder.
+- Docker daemon running.
+- Image pulled: `docker pull mongodb/mongodb-mcp-server:latest`.
+
+Environment variables:
+
+- `MDB_MCP_CONNECTION_STRING`
+- `MDB_MCP_API_CLIENT_ID`
+- `MDB_MCP_API_CLIENT_SECRET`
+
+Set `MDB_MCP_CONNECTION_STRING`, or `MDB_MCP_API_CLIENT_ID` with `MDB_MCP_API_CLIENT_SECRET`. One of the two is required.
+
+## Setup
+
+```bash
+export MDB_MCP_CONNECTION_STRING="..."
+export MDB_MCP_API_CLIENT_ID="..."
+export MDB_MCP_API_CLIENT_SECRET="..."
+export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+python proxy_mongodb.py
+```
+
+Register with Claude Code:
+
+```bash
+claude mcp add mongodb-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+  export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+  export MDB_MCP_CONNECTION_STRING="..." && \
+  export MDB_MCP_API_CLIENT_ID="..." && \
+  export MDB_MCP_API_CLIENT_SECRET="..." && \
+  python /path/to/proxy_mongodb.py'
+```

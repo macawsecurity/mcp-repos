@@ -1,0 +1,42 @@
+"""
+supabase-proxy -> SecureMCPProxy, served natively.
+
+Prereq:
+    export SUPABASE_PROJECT_REF="..."
+    export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+Run:
+    python proxy_supabase.py
+
+Claude Code:
+    claude mcp add supabase-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+      export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+      export SUPABASE_PROJECT_REF="..." && \
+      python /path/to/proxy_supabase.py'
+
+    PATH must point at Node 20+: mcp-remote needs undici, which fails on Node 18
+    with "ReferenceError: File is not defined".
+"""
+
+import os
+import sys
+import logging
+from urllib.parse import urlencode
+from macaw_adapters.mcp import SecureMCPProxy
+
+
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
+
+params = {"read_only": "true"}
+if os.environ.get("SUPABASE_PROJECT_REF"):
+    params["project_ref"] = os.environ["SUPABASE_PROJECT_REF"]
+upstream_url = f"https://mcp.supabase.com/mcp?{urlencode(params)}"
+
+proxy = SecureMCPProxy(
+    app_name="supabase-proxy",
+    command=["npx", "-y", "mcp-remote", upstream_url],
+    env={"PATH": os.environ["PATH"], "HOME": os.environ["HOME"]},
+)
+logging.info("supabase-proxy: %d tools; serving native clients", len(proxy.list_tools()))
+
+proxy.run()

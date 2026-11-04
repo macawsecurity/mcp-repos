@@ -1,0 +1,33 @@
+"""
+atlassian-proxy -> SecureMCPProxy, served natively.
+
+Prereq:
+    export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+Run:
+    python proxy_atlassian.py
+
+Claude Code:
+    claude mcp add atlassian-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+      export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+      python /path/to/proxy_atlassian.py'
+"""
+
+import os
+import sys
+import logging
+from macaw_adapters.mcp import SecureMCPProxy
+
+
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
+
+ATLASSIAN_MCP_URL = "https://mcp.atlassian.com/v2/mcp"
+
+proxy = SecureMCPProxy(
+    app_name="atlassian-proxy",
+    command=["npx", "-y", "mcp-remote", ATLASSIAN_MCP_URL],
+    env={"PATH": os.environ["PATH"], "HOME": os.environ["HOME"]},
+)
+logging.info("atlassian-proxy: %d tools; serving native clients", len(proxy.list_tools()))
+
+proxy.run()

@@ -1,0 +1,74 @@
+{
+  "policy_id": "app:databricks-proxy",
+  "version": "0.3.0",
+  "description": "Databricks Managed MCP via SecureMCPProxy",
+  "resources": [
+    "tool:databricks-proxy/**"
+  ],
+  "constraints": {
+    "parameters": {
+      "tool:databricks-proxy/execute_sql": {
+        "query": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 5000
+        }
+      },
+      "tool:databricks-proxy/execute_sql_read_only": {
+        "query": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 5000
+        }
+      }
+    },
+    "denied_parameters": {
+      "tool:databricks-proxy/execute_sql": {
+        "query": [
+          "*DROP *",
+          "*drop *",
+          "*DELETE *",
+          "*delete *",
+          "*TRUNCATE*",
+          "*truncate*",
+          "*ALTER *",
+          "*alter *",
+          "*REVOKE*",
+          "*revoke*",
+          "*GRANT *",
+          "*grant *",
+          "*VACUUM*",
+          "*vacuum*"
+        ]
+      },
+      "tool:databricks-proxy/execute_sql_read_only": {
+        "query": [
+          "*DROP *",
+          "*drop *",
+          "*DELETE *",
+          "*delete *",
+          "*INSERT *",
+          "*insert *",
+          "*UPDATE *",
+          "*update *",
+          "*ALTER *",
+          "*alter *",
+          "*CREATE *",
+          "*create *",
+          "*TRUNCATE*",
+          "*truncate*",
+          "*MERGE *",
+          "*merge *",
+          "*GRANT *",
+          "*grant *",
+          "*REVOKE*",
+          "*revoke*",
+          "*VACUUM*",
+          "*vacuum*",
+          "*COPY INTO*",
+          "*copy into*"
+        ]
+      }
+    }
+  }
+}

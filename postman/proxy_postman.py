@@ -1,0 +1,42 @@
+"""
+postman-proxy -> SecureMCPProxy, served natively.
+
+Prereq:
+    export POSTMAN_API_KEY="..."
+    export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+Run:
+    python proxy_postman.py
+
+Claude Code:
+    claude mcp add postman-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+      export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+      export POSTMAN_API_KEY="..." && \
+      python /path/to/proxy_postman.py'
+"""
+
+import os
+import sys
+import logging
+from macaw_adapters.mcp import SecureMCPProxy
+
+
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
+
+api_key = os.environ.get("POSTMAN_API_KEY")
+if not api_key:
+    raise ValueError("POSTMAN_API_KEY is not set")
+
+
+proxy = SecureMCPProxy(
+    app_name="postman-proxy",
+    command=["npx", "-y", "@postman/postman-mcp-server", "--minimal"],
+    env={
+        "PATH": os.environ["PATH"],
+        "HOME": os.environ["HOME"],
+        "POSTMAN_API_KEY": api_key,
+    },
+)
+logging.info("postman-proxy: %d tools; serving native clients", len(proxy.list_tools()))
+
+proxy.run()

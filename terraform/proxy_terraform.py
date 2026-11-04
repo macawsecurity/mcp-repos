@@ -1,0 +1,47 @@
+"""
+terraform-proxy -> SecureMCPProxy, served natively.
+
+Prereq:
+    export TFE_ADDRESS="..."
+    export TFE_TOKEN="..."
+    export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+Run:
+    python proxy_terraform.py
+
+Claude Code:
+    claude mcp add terraform-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+      export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+      export TFE_TOKEN="..." && \
+      export TFE_ADDRESS="..." && \
+      python /path/to/proxy_terraform.py'
+"""
+
+import os
+import sys
+import logging
+from macaw_adapters.mcp import SecureMCPProxy
+
+
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
+
+upstream_env = {"PATH": os.environ["PATH"]}
+for k in ("TFE_TOKEN", "TFE_ADDRESS"):
+    if os.environ.get(k):
+        upstream_env[k] = os.environ[k]
+
+docker_args = ["docker", "run", "--rm", "-i"]
+if upstream_env.get("TFE_TOKEN"):
+    docker_args += ["-e", "TFE_TOKEN"]
+if upstream_env.get("TFE_ADDRESS"):
+    docker_args += ["-e", "TFE_ADDRESS"]
+docker_args += ["hashicorp/terraform-mcp-server:1.3.0"]
+
+proxy = SecureMCPProxy(
+    app_name="terraform-proxy",
+    command=docker_args,
+    env=upstream_env,
+)
+logging.info("terraform-proxy: %d tools; serving native clients", len(proxy.list_tools()))
+
+proxy.run()

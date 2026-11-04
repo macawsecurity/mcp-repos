@@ -1,0 +1,41 @@
+"""
+airtable-proxy -> SecureMCPProxy, served natively.
+
+Prereq:
+    export AIRTABLE_API_KEY="..."
+    export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+Run:
+    python proxy_airtable.py
+
+Claude Code:
+    claude mcp add airtable-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+      export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+      export AIRTABLE_API_KEY="..." && \
+      python /path/to/proxy_airtable.py'
+"""
+
+import os
+import sys
+import logging
+from macaw_adapters.mcp import SecureMCPProxy
+
+
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
+
+api_key = os.environ.get("AIRTABLE_API_KEY")
+if not api_key:
+    raise ValueError("AIRTABLE_API_KEY is not set (format: pat123.abc123...)")
+
+proxy = SecureMCPProxy(
+    app_name="airtable-proxy",
+    command=["npx", "-y", "airtable-mcp-server"],
+    env={
+        "PATH": os.environ["PATH"],
+        "HOME": os.environ["HOME"],
+        "AIRTABLE_API_KEY": api_key,
+    },
+)
+logging.info("airtable-proxy: %d tools; serving native clients", len(proxy.list_tools()))
+
+proxy.run()

@@ -1,0 +1,50 @@
+"""
+snyk-proxy -> SecureMCPProxy, served natively.
+
+Prereq:
+    export SNYK_CFG_ORG="..."
+    export SNYK_TOKEN="..."
+    export MACAW_HOME="/path/to/macaw-client-<version>-Linux-x86_64-py3.12"
+
+Run:
+    python proxy_snyk.py
+
+Claude Code:
+    claude mcp add snyk-macaw -- bash -lc 'source /path/to/.venv/bin/activate && \
+      export MACAW_HOME=/path/to/macaw-client-<version>-Linux-x86_64-py3.12 && \
+      export SNYK_TOKEN="..." && \
+      export SNYK_CFG_ORG="..." && \
+      python /path/to/proxy_snyk.py'
+"""
+
+import os
+import sys
+import logging
+from macaw_adapters.mcp import SecureMCPProxy
+
+
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
+
+token = os.environ.get("SNYK_TOKEN")
+if not token:
+    raise ValueError(
+        "SNYK_TOKEN is not set. Get one at https://app.snyk.io/account "
+        "(Account Settings -> API Token)."
+    )
+
+upstream_env = {
+    "PATH": os.environ["PATH"],
+    "HOME": os.environ["HOME"],
+    "SNYK_TOKEN": token,
+}
+if os.environ.get("SNYK_CFG_ORG"):
+    upstream_env["SNYK_CFG_ORG"] = os.environ["SNYK_CFG_ORG"]
+
+proxy = SecureMCPProxy(
+    app_name="snyk-proxy",
+    command=["npx", "-y", "snyk@latest", "mcp", "-t", "stdio"],
+    env=upstream_env,
+)
+logging.info("snyk-proxy: %d tools; serving native clients", len(proxy.list_tools()))
+
+proxy.run()

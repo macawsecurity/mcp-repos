@@ -1,0 +1,37 @@
+{
+  "policy_id": "app:salesforce-agentforce-proxy",
+  "version": "0.1.0",
+  "scope": "global",
+  "resources": [
+    "tool:salesforce-agentforce-proxy/agentforce_chat"
+  ],
+  "constraints": {
+    "denied_parameters": {
+      "tool:salesforce-agentforce-proxy/agentforce_chat": {
+        "message": [
+          "*ignore previous*",
+          "*ignore all previous*",
+          "*disregard your instructions*",
+          "*system prompt*",
+          "*-----BEGIN*PRIVATE KEY*",
+          "*sk-*",
+          "*password*",
+          "*credit card*"
+        ]
+      }
+    },
+    "parameters": {
+      "tool:salesforce-agentforce-proxy/agentforce_chat": {
+        "message": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 2000
+        },
+        "context": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "description": "Salesforce Agentforce MCP via SecureMCPProxy"
+}
