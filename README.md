@@ -40,32 +40,32 @@ Popular MCP servers, secured with MACAW. Each folder holds a `SecureMCPProxy` th
 
 > **SecureMCP:** These servers are an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 
-Open-source MCP servers ported to `SecureMCP`: the server itself runs inside MACAW, so every tool call is checked against its MAPL policy (in the folder's `Policy/`). Each folder's README covers setup.
+Open-source MCP servers ported to `SecureMCP`: the server itself runs inside MACAW, so every tool call is checked against its MAPL policy (in each folder's `Policy/`). Each folder's README covers setup.
 
 | Server | Folder |
 |---|---|
-| [BICScan MCP](securemcp/bicscan-mcp/) | `securemcp/bicscan-mcp/` |
-| [Chroma MCP](securemcp/chroma-mcp/) | `securemcp/chroma-mcp/` |
-| [Conan MCP](securemcp/conan-mcp/) | `securemcp/conan-mcp/` |
-| [Salesforce Data Cloud MCP](securemcp/datacloud-mcp-query/) | `securemcp/datacloud-mcp-query/` |
-| [ESP RainMaker MCP](securemcp/esp-rainmaker-mcp/) | `securemcp/esp-rainmaker-mcp/` |
-| [Excalidraw Architect MCP](securemcp/excalidraw-architect-mcp/) | `securemcp/excalidraw-architect-mcp/` |
-| [Cloudera Iceberg (Impala) MCP](securemcp/iceberg-mcp-server/) | `securemcp/iceberg-mcp-server/` |
-| [Apache IoTDB MCP](securemcp/iotdb-mcp-server/) | `securemcp/iotdb-mcp-server/` |
-| [Jira Reporter MCP](securemcp/jira_reporter/) | `securemcp/jira_reporter/` |
-| [Kubernetes MCP](securemcp/k8s-mcp-server/) | `securemcp/k8s-mcp-server/` |
-| [PostgreSQL MCP](securemcp/MCP-server-postgres/) | `securemcp/MCP-server-postgres/` |
-| [Azure DevOps MCP](securemcp/mcp-azure-devops/) | `securemcp/mcp-azure-devops/` |
-| [Obsidian MCP](securemcp/mcp-obsidian/) | `securemcp/mcp-obsidian/` |
-| [Apache Pinot MCP](securemcp/mcp-pinot/) | `securemcp/mcp-pinot/` |
-| [Couchbase MCP](securemcp/mcp-server-couchbase/) | `securemcp/mcp-server-couchbase/` |
-| [MongoDB Memory MCP](securemcp/memory-mcp/) | `securemcp/memory-mcp/` |
-| [Optuna MCP](securemcp/optuna-mcp/) | `securemcp/optuna-mcp/` |
-| [Snowflake MCP](securemcp/snowflake-mcp/) | `securemcp/snowflake-mcp/` |
-| [Splunk MCP](securemcp/splunk-mcp/) | `securemcp/splunk-mcp/` |
-| [Spotify MCP](securemcp/spotify-mcp/) | `securemcp/spotify-mcp/` |
-| [Telegram MCP](securemcp/telegram-mcp/) | `securemcp/telegram-mcp/` |
-| [YDB MCP](securemcp/ydb-mcp/) | `securemcp/ydb-mcp/` |
+| [BICScan MCP](bicscan-mcp/) | `bicscan-mcp/` |
+| [Chroma MCP](chroma-mcp/) | `chroma-mcp/` |
+| [Conan MCP](conan-mcp/) | `conan-mcp/` |
+| [Salesforce Data Cloud MCP](datacloud-mcp-query/) | `datacloud-mcp-query/` |
+| [ESP RainMaker MCP](esp-rainmaker-mcp/) | `esp-rainmaker-mcp/` |
+| [Excalidraw Architect MCP](excalidraw-architect-mcp/) | `excalidraw-architect-mcp/` |
+| [Cloudera Iceberg (Impala) MCP](iceberg-mcp-server/) | `iceberg-mcp-server/` |
+| [Apache IoTDB MCP](iotdb-mcp-server/) | `iotdb-mcp-server/` |
+| [Jira Reporter MCP](jira_reporter/) | `jira_reporter/` |
+| [Kubernetes MCP](k8s-mcp-server/) | `k8s-mcp-server/` |
+| [PostgreSQL MCP](MCP-server-postgres/) | `MCP-server-postgres/` |
+| [Azure DevOps MCP](mcp-azure-devops/) | `mcp-azure-devops/` |
+| [Obsidian MCP](mcp-obsidian/) | `mcp-obsidian/` |
+| [Apache Pinot MCP](mcp-pinot/) | `mcp-pinot/` |
+| [Couchbase MCP](mcp-server-couchbase/) | `mcp-server-couchbase/` |
+| [MongoDB Memory MCP](memory-mcp/) | `memory-mcp/` |
+| [Optuna MCP](optuna-mcp/) | `optuna-mcp/` |
+| [Snowflake MCP](snowflake-mcp/) | `snowflake-mcp/` |
+| [Splunk MCP](splunk-mcp/) | `splunk-mcp/` |
+| [Spotify MCP](spotify-mcp/) | `spotify-mcp/` |
+| [Telegram MCP](telegram-mcp/) | `telegram-mcp/` |
+| [YDB MCP](ydb-mcp/) | `ydb-mcp/` |
 
 ## Use a proxy
 

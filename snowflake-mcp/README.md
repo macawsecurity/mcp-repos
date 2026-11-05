@@ -31,7 +31,7 @@ Only the explicitly listed Cortex services will be available as tools in the MCP
 
 **Other Services**
 
-Other services include tooling for [object management](object-management), [query execution](sql-execution), and [semantic view usage](semantic-view-querying).
+Other services include tooling for [object management](#object-management), [query execution](#sql-execution), and [semantic view usage](#semantic-view-querying).
 These groups of tools can be enabled by setting them to True in the `other_services` section of the configuration file.
 
 **SQL Statement Permissions**
