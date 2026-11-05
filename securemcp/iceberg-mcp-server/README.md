@@ -1,6 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 >
-> Modified from [cloudera/iceberg-mcp-server](https://github.com/cloudera/iceberg-mcp-server) to run on SecureMCP.
+> Modified from [cloudera/iceberg-mcp-server](https://github.com/cloudera/iceberg-mcp-server), an open-source project by Cloudera, to run on SecureMCP.
 
 # Cloudera Iceberg MCP Server (via Impala)
 

@@ -1,6 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 >
-> Modified from [CyprianFusi/MCP-server-postgres](https://github.com/CyprianFusi/MCP-server-postgres) to run on SecureMCP.
+> Modified from [CyprianFusi/MCP-server-postgres](https://github.com/CyprianFusi/MCP-server-postgres), an open-source project by Cyprian Fusi, to run on SecureMCP.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/CyprianFusi/MCP-server-postgres/main/assets/binati_logo.png" alt="BINATI AI Logo" width="75"/><strong></strong>

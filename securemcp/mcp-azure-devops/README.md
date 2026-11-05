@@ -1,6 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 >
-> Modified from [Vortiago/mcp-azure-devops](https://github.com/Vortiago/mcp-azure-devops) to run on SecureMCP.
+> Modified from [Vortiago/mcp-azure-devops](https://github.com/Vortiago/mcp-azure-devops), an open-source project by Vortiago, to run on SecureMCP.
 
 # MCP Azure DevOps Server
 

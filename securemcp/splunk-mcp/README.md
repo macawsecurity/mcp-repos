@@ -1,6 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 >
-> Modified from [livehybrid/splunk-mcp](https://github.com/livehybrid/splunk-mcp) to run on SecureMCP.
+> Modified from [livehybrid/splunk-mcp](https://github.com/livehybrid/splunk-mcp), an open-source project by LiveHybrid, to run on SecureMCP.
 
 # Splunk MCP (Model Context Protocol) Tool
 

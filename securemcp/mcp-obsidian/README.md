@@ -1,6 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 >
-> Modified from [MarkusPfundstein/mcp-obsidian](https://github.com/MarkusPfundstein/mcp-obsidian) to run on SecureMCP.
+> Modified from [MarkusPfundstein/mcp-obsidian](https://github.com/MarkusPfundstein/mcp-obsidian), an open-source project by Markus Pfundstein, to run on SecureMCP.
 
 # MCP server for Obsidian
 

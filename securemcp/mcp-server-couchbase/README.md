@@ -1,6 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 >
-> Modified from [couchbase/mcp-server-couchbase](https://github.com/couchbase/mcp-server-couchbase) to run on SecureMCP.
+> Modified from [couchbase/mcp-server-couchbase](https://github.com/couchbase/mcp-server-couchbase), an open-source project by Couchbase, to run on SecureMCP.
 
 # Couchbase MCP Server
 

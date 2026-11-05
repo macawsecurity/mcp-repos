@@ -1,6 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 >
-> Modified from [Snowflake-Labs/mcp](https://github.com/Snowflake-Labs/mcp) to run on SecureMCP.
+> Modified from [Snowflake-Labs/mcp](https://github.com/Snowflake-Labs/mcp), an open-source project by Snowflake Labs, to run on SecureMCP.
 
 # Snowflake Cortex AI Model Context Protocol (MCP) Server
 

@@ -1,6 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 >
-> Modified from [chroma-core/chroma-mcp](https://github.com/chroma-core/chroma-mcp) to run on SecureMCP.
+> Modified from [chroma-core/chroma-mcp](https://github.com/chroma-core/chroma-mcp), an open-source project by Chroma, to run on SecureMCP.
 
 <p align="center">
   <a href="https://trychroma.com"><img src="https://user-images.githubusercontent.com/891664/227103090-6624bf7d-9524-4e05-9d2c-c28d5d451481.png" alt="Chroma logo"></a>
