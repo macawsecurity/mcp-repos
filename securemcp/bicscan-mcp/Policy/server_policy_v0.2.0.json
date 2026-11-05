@@ -1,0 +1,27 @@
+{
+  "policy_id": "app:securemcp-BICScan",
+  "version": "0.2.0",
+  "description": "BICScan secured by SecureMCP",
+  "resources": [
+    "tool:get_risk_score",
+    "tool:get_assets"
+  ],
+  "constraints": {
+    "parameters": {
+      "tool:get_risk_score": {
+        "address": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 512
+        }
+      },
+      "tool:get_assets": {
+        "address": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 512
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "policy_id": "app:securemcp-Demo",
+  "version": "0.2.0",
+  "description": "Salesforce Data Cloud secured by SecureMCP",
+  "resources": [
+    "tool:query",
+    "tool:list_tables",
+    "tool:describe_table"
+  ],
+  "constraints": {
+    "parameters": {
+      "tool:query": {
+        "sql": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 5000,
+          "pattern": "(?i)^(?![\\s\\S]*(;|\\b(INSERT|UPDATE|DELETE|MERGE|DROP|ALTER|CREATE|TRUNCATE|GRANT|REVOKE)\\b))\\s*(SELECT|WITH)\\b[\\s\\S]*$"
+        },
+        "dataspace": {
+          "type": "string",
+          "allowed_values": [
+            "default"
+          ]
+        }
+      },
+      "tool:list_tables": {
+        "dataspace": {
+          "type": "string",
+          "allowed_values": [
+            "default"
+          ]
+        }
+      },
+      "tool:describe_table": {
+        "table": {
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "max_length": 128
+        },
+        "dataspace": {
+          "type": "string",
+          "allowed_values": [
+            "default"
+          ]
+        }
+      }
+    }
+  }
+}

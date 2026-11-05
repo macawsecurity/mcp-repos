@@ -1,0 +1,61 @@
+{
+  "policy_id": "app:securemcp-spotify-mcp",
+  "version": "0.2.0",
+  "description": "Spotify secured by SecureMCP",
+  "resources": [
+    "tool:SpotifyPlayback",
+    "tool:SpotifySearch",
+    "tool:SpotifyQueue",
+    "tool:SpotifyGetInfo",
+    "tool:SpotifyPlaylist"
+  ],
+  "constraints": {
+    "parameters": {
+      "tool:SpotifyPlayback": {
+        "action": {
+          "type": "string",
+          "allowed_values": [
+            "get",
+            "start",
+            "pause",
+            "skip"
+          ]
+        },
+        "num_skips": {
+          "type": "integer",
+          "min": 1,
+          "max": 50
+        }
+      },
+      "tool:SpotifySearch": {
+        "query": {
+          "type": "string",
+          "max_length": 1000
+        },
+        "limit": {
+          "type": "integer",
+          "min": 1,
+          "max": 50
+        }
+      },
+      "tool:SpotifyQueue": {
+        "action": {
+          "type": "string",
+          "allowed_values": [
+            "get",
+            "add"
+          ]
+        }
+      },
+      "tool:SpotifyPlaylist": {
+        "action": {
+          "type": "string",
+          "allowed_values": [
+            "get",
+            "get_tracks"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "policy_id": "app:securemcp-excalidraw-architect",
+  "version": "0.2.0",
+  "description": "Excalidraw Architect secured by SecureMCP",
+  "resources": [
+    "tool:create_diagram",
+    "tool:mermaid_to_excalidraw",
+    "tool:modify_diagram",
+    "tool:get_diagram_info"
+  ],
+  "constraints": {
+    "parameters": {
+      "tool:create_diagram": {
+        "output_path": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 255,
+          "pattern": "^[^/].*\\.excalidraw$"
+        }
+      },
+      "tool:mermaid_to_excalidraw": {
+        "output_path": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 255,
+          "pattern": "^[^/].*\\.excalidraw$"
+        }
+      },
+      "tool:modify_diagram": {
+        "file_path": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 255,
+          "pattern": "^[^/].*\\.excalidraw$"
+        }
+      },
+      "tool:get_diagram_info": {
+        "file_path": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 255,
+          "pattern": "^[^/].*\\.excalidraw$"
+        }
+      }
+    },
+    "denied_parameters": {
+      "tool:create_diagram": {
+        "output_path": [
+          "*..*"
+        ]
+      },
+      "tool:mermaid_to_excalidraw": {
+        "output_path": [
+          "*..*"
+        ]
+      },
+      "tool:modify_diagram": {
+        "file_path": [
+          "*..*"
+        ]
+      },
+      "tool:get_diagram_info": {
+        "file_path": [
+          "*..*"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,174 @@
+"""
+MACAW client smoke test for datacloud-mcp-query
+(post FastMCP -> SecureMCP port).
+
+Usage:
+    python3 client-test-macaw.py "datacloud" datacloud-test-client
+    python3 client-test-macaw.py "Demo"      datacloud-test-client
+
+Args:
+    1. server filter substring (matches against agent_id)
+    2. client name (any string for this caller's MACAW identity)
+
+
+
+"""
+
+import asyncio
+import sys
+
+from macaw_adapters.mcp import Client
+
+
+EXPECTED_TOOLS = {"query", "list_tables", "describe_table"}
+
+
+def get_server(name, client):
+    """Look up the datacloud server's agent_id on the mesh.
+
+    Filters out per-tool sub-agents and the test client's own agent.
+    """
+    agents = client.macaw_client.list_agents(agent_type="app")
+    server = [
+        a for a in agents
+        if name in a.get("agent_id", "")
+        and "/tool." not in a.get("agent_id", "")
+        and "securemcp-client-" not in a.get("agent_id", "")
+    ]
+    if not server:
+        print(f"No server found matching: {name}")
+        return None
+    return server[0].get("agent_id")
+
+
+async def main():
+    if len(sys.argv) < 3:
+        print('Usage: python3 client-test-macaw.py "<server filter>" <client name>')
+        print('Example: python3 client-test-macaw.py "datacloud" datacloud-test-client')
+        sys.exit(1)
+
+    name = sys.argv[1]
+    client_name = sys.argv[2]
+
+    client = Client(client_name)
+    server_id = get_server(name, client)
+    if not server_id:
+        return
+    client.set_default_server(server_id)
+
+    tools = await client.list_tools(server_name=name)
+    seen = set()
+    print("Tools advertised by server:")
+    for t in tools:
+        if t["name"] not in seen:
+            seen.add(t["name"])
+            print(f"  - {t['name']}")
+    print(f"\n  Total unique tools: {len(seen)}\n")
+
+    print("=" * 60)
+    print("DATACLOUD-MCP-QUERY TESTS")
+    print("=" * 60)
+
+    print("\n[TEST 1] tool list -- port-correctness")
+    missing = EXPECTED_TOOLS - seen
+    if not missing:
+        print(f"  PASS -- all {len(EXPECTED_TOOLS)} tools advertised "
+              "(query, list_tables, describe_table).")
+    else:
+        print(f"  FAILED -- missing tools: {sorted(missing)}")
+        print("  Likely an import-time error in server.py. Check the "
+              "server log for traceback.")
+        return
+
+    print("\n[TEST 2] list_tables -- default-arg path")
+    try:
+        result = await client.call_tool("list_tables", {})
+        text = str(result)
+        print(f"  Result: {text[:240]}")
+        print("  PASS -- list_tables returned. Default 'dataspace=\"default\"' "
+              "took effect (real Python default, not FieldInfo).")
+    except Exception as e:
+        msg = str(e)
+        print(f"  Got error: {msg[:240]}")
+        if "FieldInfo" in msg or "Field(" in msg:
+            print("  FAILED -- FieldInfo leaked into the handler. The "
+                  "Field strip in server.py is incomplete.")
+        else:
+            print("  PASS-ish -- exception was not from a Field leak. "
+                  "Likely upstream Data Cloud / auth issue. Handler "
+                  "was reached.")
+
+    print("\n[TEST 3] describe_table -- required-arg path")
+    try:
+        result = await client.call_tool(
+            "describe_table",
+            {"table": "Account__dlm"},
+        )
+        text = str(result)
+        print(f"  Result: {text[:240]}")
+        print("  PASS -- describe_table accepted the required 'table' arg "
+              "and returned (real columns or upstream error).")
+    except Exception as e:
+        msg = str(e)
+        print(f"  Got error: {msg[:240]}")
+        if "missing" in msg.lower() and "table" in msg.lower():
+            print("  FAILED -- mesh dispatch lost the 'table' arg.")
+        elif "FieldInfo" in msg:
+            print("  FAILED -- FieldInfo leaked into the handler.")
+        else:
+            print("  PASS-ish -- exception was not a signature mismatch. "
+                  "Handler was reached.")
+
+    print("\n[TEST 4] query -- required + default args")
+    try:
+        result = await client.call_tool(
+            "query",
+            {"sql": "SELECT 1 AS macaw_smoke"},
+        )
+        text = str(result)
+        print(f"  Result: {text[:240]}")
+        print("  PASS -- query accepted required 'sql' and defaulted "
+              "dataspace + query_settings correctly.")
+    except Exception as e:
+        msg = str(e)
+        print(f"  Got error: {msg[:240]}")
+        if "FieldInfo" in msg:
+            print("  FAILED -- FieldInfo leaked into run_query.")
+        else:
+            print("  PASS-ish -- exception was not a Field leak. Handler "
+                  "was reached; upstream Data Cloud / SQL surface is "
+                  "where the failure came from.")
+
+
+    async def run(label, tool, args):
+        print(f"\n[{label}] {tool} {args if tool != 'query' or len(str(args)) < 120 else '<long sql>'}")
+        try:
+            result = await client.call_tool(tool, args)
+            print(f"  Result: {str(result)[:200]}")
+        except Exception as e:
+            print(f"  Failed: {str(e)[:200]}")
+
+    await run("D1 query dataspace='prod_secret' (expect DENY: dataspace not in allowed_values)",
+              "query", {"sql": "SELECT 1", "dataspace": "prod_secret"})
+
+    await run("D4 describe_table table='bad-name!' (expect DENY: table fails pattern)",
+              "describe_table", {"table": "bad-name!"})
+
+    await run("D5 query with >5000-char sql (expect DENY: sql exceeds maximum length 5000)",
+              "query", {"sql": "SELECT '" + ("A" * 5200) + "' AS x"})
+
+    await run("A1 query w/ 'DROP' literal (expect BLOCK -> allow_destroy/role:manager)",
+              "query", {"sql": "SELECT 'pretend DROP' AS note", "dataspace": "default"})
+
+
+   
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nExiting...")
+    except Exception as e:
+        print(f"\nFatal: {e}")
+        sys.exit(1)

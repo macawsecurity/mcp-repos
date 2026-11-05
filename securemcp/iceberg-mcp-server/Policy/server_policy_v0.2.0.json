@@ -1,0 +1,21 @@
+{
+  "policy_id": "app:securemcp-Cloudera-Iceberg-MCP-Server-via-Impala",
+  "version": "0.2.0",
+  "description": "Cloudera Iceberg (Impala) secured by SecureMCP",
+  "resources": [
+    "tool:get_schema",
+    "tool:execute_query"
+  ],
+  "constraints": {
+    "parameters": {
+      "tool:execute_query": {
+        "query": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 10000,
+          "pattern": "(?i)^(?![\\s\\S]*(;|\\b(DROP|DELETE|INSERT|UPDATE|UPSERT|LOAD|INTO|ALTER|TRUNCATE|CREATE|MERGE|GRANT|REVOKE|COMPUTE|INVALIDATE|REFRESH)\\b))\\s*(SELECT|SHOW|DESCRIBE|WITH)\\b[\\s\\S]*$"
+        }
+      }
+    }
+  }
+}

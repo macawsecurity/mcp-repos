@@ -1,0 +1,42 @@
+{
+  "policy_id": "app:securemcp-splunk",
+  "version": "0.2.0",
+  "description": "Splunk secured by SecureMCP",
+  "resources": [
+    "tool:search_splunk",
+    "tool:list_indexes",
+    "tool:get_index_info",
+    "tool:list_saved_searches",
+    "tool:current_user",
+    "tool:list_users",
+    "tool:list_kvstore_collections",
+    "tool:health_check",
+    "tool:get_indexes_and_sourcetypes",
+    "tool:health",
+    "tool:ping"
+  ],
+  "constraints": {
+    "parameters": {
+      "tool:get_index_info": {
+        "index_name": {
+          "max_length": 128,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "tool:search_splunk": {
+        "max_results": {
+          "max": 1000,
+          "min": 1,
+          "type": "integer"
+        },
+        "search_query": {
+          "max_length": 4000,
+          "min_length": 1,
+          "type": "string",
+          "pattern": "(?i)^(?![\\s\\S]*\\|\\s*(delete|collect|outputlookup|outputcsv|script|run|sendemail|sendalert|stash|tscollect|mcollect|rest|dump|map)\\b)[\\s\\S]*$"
+        }
+      }
+    }
+  }
+}
