@@ -1,36 +1,4 @@
-"""
-mcp-obsidian server (SecureMCP port).
-
-WHAT THIS FILE USED TO DO
-=========================
-The original was a low-level MCP server. It had:
-  - A dict `tool_handlers` mapping tool names to ToolHandler instances.
-  - One @app.list_tools() that asked each handler for its
-    Tool() description and returned them all.
-  - One @app.call_tool() that looked up the handler by name and
-    called its run_tool(args) method.
-  - 13 ToolHandler subclasses defined in tools.py, each carrying its
-    own name + Tool() description + run_tool body.
-
-WHAT THIS FILE DOES NOW
-=======================
-Same 13 tools, but each is a normal @app.tool() function. The 13
-ToolHandler subclasses in tools.py are NOT changed -- the port
-keeps a single instance of each at module level and the wrapper
-functions delegate to handler.run_tool(args).
-
-Each wrapper:
-  - takes typed kwargs matching the original inputSchema
-  - builds the dict the handler's run_tool expects, skipping kwargs
-    that are None so optional fields stay omitted
-  - calls handler.run_tool(args) (sync method -- returns a list of
-    TextContent)
-  - extracts the .text from the TextContent and returns it as a
-    plain string
-
-The tool names are preserved exactly via @app.tool(name=...) so
-existing callers see the same advertised names.
-"""
+"""Obsidian MCP server, running on SecureMCP."""
 
 import json
 import logging
@@ -394,5 +362,5 @@ def obsidian_get_recent_changes(limit: int = 10, days: int = 90) -> str:
 
 def main():
     """Run the SecureMCP server (sync; SecureMCP owns its asyncio.run())."""
-    logger.info("Starting mcp-obsidian on the MACAW mesh")
-    app.run()
+    logger.info("Starting mcp-obsidian")
+    app.run(transport="stdio")

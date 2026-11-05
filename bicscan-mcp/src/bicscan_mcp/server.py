@@ -109,7 +109,7 @@ async def get_assets(address: str) -> dict:
 
 def main() -> None:
     """Run the MCP BICScan server (sync; SecureMCP owns asyncio.run())."""
-    mcp.run()
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

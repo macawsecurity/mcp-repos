@@ -58,8 +58,8 @@ def main():
         # logger.info(f"Starting K8s MCP Server with {transport} transport")
         # mcp.run(transport=transport)
 
-        logger.info("Starting K8s MCP Server (SecureMCP / MACAW mesh)")
-        mcp.run()
+        logger.info("Starting K8s MCP Server")
+        mcp.run(transport="stdio")
     except KeyboardInterrupt:
         logger.info("Keyboard interrupt received. Shutting down gracefully...")
         sys.exit(0)

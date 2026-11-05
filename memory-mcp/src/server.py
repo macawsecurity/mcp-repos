@@ -283,5 +283,5 @@ def health_check() -> str:
 
 
 if __name__ == "__main__":
-    logger.info("MCP server starting on MACAW mesh (no HTTP transport)")
-    mcp.run()
+    logger.info("MCP server starting")
+    mcp.run(transport="stdio")

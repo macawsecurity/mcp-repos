@@ -281,4 +281,4 @@ class YDBMCPServer():
         """Run the MCP server (default transport: stdio)."""
         # super().run(transport=transport)  # type: ignore[arg-type]
         # for macaw transport does not matter
-        self.mcp.run()
+        self.mcp.run(transport="stdio")

@@ -6442,7 +6442,7 @@ def main() -> None:
         file=sys.stderr,
     )
     try:
-        mcp.run()
+        mcp.run(transport="stdio")
     except Exception as e:
         print(f"Server error: {e}", file=sys.stderr)
         if isinstance(e, sqlite3.OperationalError) and "database is locked" in str(e):

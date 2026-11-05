@@ -372,7 +372,7 @@ async def SpotifyPlaylist(
 def main():
     """Run the SecureMCP server (sync; SecureMCP owns its asyncio.run() internally)."""
     try:
-        mcp.run()
+        mcp.run(transport="stdio")
     except Exception as e:
         logger.error(f"Server error occurred: {str(e)}")
         raise

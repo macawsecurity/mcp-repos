@@ -25,7 +25,14 @@ from k8s_mcp_server.errors import (
     K8sMCPError,
 )
 from k8s_mcp_server.prompts import register_prompts
+from dataclasses import asdict
+
 from k8s_mcp_server.tools import CommandHelpResult, CommandResult
+
+
+def _plain(result: CommandHelpResult) -> dict:
+    """The help result as a plain dict, without empty fields."""
+    return {k: v for k, v in asdict(result).items() if v is not None}
 
 logger = logging.getLogger(__name__)
 
@@ -230,7 +237,7 @@ async def describe_kubectl(
     Raises:
         CommandExecutionError: If kubectl is not installed or help retrieval fails
     """
-    return await _describe_tool_command("kubectl", command, ctx)
+    return _plain(await _describe_tool_command("kubectl", command, ctx))
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Helm Help", readOnlyHint=True), icons=_ICONS["helm"])
@@ -252,7 +259,7 @@ async def describe_helm(
     Raises:
         CommandExecutionError: If helm is not installed or help retrieval fails
     """
-    return await _describe_tool_command("helm", command, ctx)
+    return _plain(await _describe_tool_command("helm", command, ctx))
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Istio Help", readOnlyHint=True), icons=_ICONS["istioctl"])
@@ -274,7 +281,7 @@ async def describe_istioctl(
     Raises:
         CommandExecutionError: If istioctl is not installed or help retrieval fails
     """
-    return await _describe_tool_command("istioctl", command, ctx)
+    return _plain(await _describe_tool_command("istioctl", command, ctx))
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="ArgoCD Help", readOnlyHint=True), icons=_ICONS["argocd"])
@@ -296,7 +303,7 @@ async def describe_argocd(
     Raises:
         CommandExecutionError: If argocd is not installed or help retrieval fails
     """
-    return await _describe_tool_command("argocd", command, ctx)
+    return _plain(await _describe_tool_command("argocd", command, ctx))
 
 
 # Tool-specific command execution functions

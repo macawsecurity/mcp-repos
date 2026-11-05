@@ -240,7 +240,7 @@ def main(
 
     logger.info(f"Registered {len(final_tools)} tool(s)")
 
-    mcp.run()
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

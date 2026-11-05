@@ -580,7 +580,7 @@ elif config.sql_dialect == "table":
 def main():
     logger.info("iotdb_mcp_server running with stdio transport")
     # Initialize and run the server
-    mcp.run()
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

@@ -1243,7 +1243,7 @@ async def get_group_details(
 
 
 def main() -> None:
-    mcp.run()
+    mcp.run(transport="stdio")
 
 if __name__ == "__main__":
     main()

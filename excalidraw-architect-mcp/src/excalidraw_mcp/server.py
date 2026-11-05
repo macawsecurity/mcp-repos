@@ -300,11 +300,5 @@ def get_diagram_info(file_path: str) -> str:
 
 
 def main():
-    """Run the MCP server on the MACAW mesh.
-
-    Port note: the original called `mcp.run()` on fastmcp 2.x and served
-    stdio. Under SecureMCP the same `mcp.run()` registers with the MACAW
-    Local Agent and serves over the mesh. The original took no transport
-    or argv argument, so none is added here.
-    """
-    mcp.run()
+    """Run the MCP server over stdio."""
+    mcp.run(transport="stdio")

@@ -46,7 +46,7 @@ pinot_client = PinotClient(pinot_config)
 mcp = SecureMCP("Pinot-MCP-Server")
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def test_connection() -> str:
     """Test Pinot connection and return diagnostics"""
     try:
@@ -56,7 +56,7 @@ def test_connection() -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def reload_table_filters() -> str:
     """Reload table filter configuration from file without restarting server.
 
@@ -77,7 +77,7 @@ def reload_table_filters() -> str:
         return json.dumps({"status": "error", "message": str(e)}, indent=2)
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def read_query(query: str) -> str:
     """Execute a SELECT query on the Pinot database"""
     try:
@@ -89,7 +89,7 @@ def read_query(query: str) -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def list_tables() -> str:
     """List all tables in Pinot"""
     try:
@@ -99,7 +99,7 @@ def list_tables() -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def table_details(tableName: str) -> str:
     """Get table size details"""
     try:
@@ -109,7 +109,7 @@ def table_details(tableName: str) -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def segment_list(tableName: str) -> str:
     """List segments for a table"""
     try:
@@ -119,7 +119,7 @@ def segment_list(tableName: str) -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def index_column_details(tableName: str, segmentName: str) -> str:
     """Get index/column details for a segment"""
     try:
@@ -132,7 +132,7 @@ def index_column_details(tableName: str, segmentName: str) -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def segment_metadata_details(tableName: str) -> str:
     """Get metadata for segments of a table"""
     try:
@@ -142,7 +142,7 @@ def segment_metadata_details(tableName: str) -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def tableconfig_schema_details(tableName: str) -> str:
     """Get table config and schema"""
     try:
@@ -152,7 +152,7 @@ def tableconfig_schema_details(tableName: str) -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def create_schema(schemaJson: str, override: bool = True, force: bool = False) -> str:
     """Create a new schema"""
     try:
@@ -166,7 +166,7 @@ def create_schema(schemaJson: str, override: bool = True, force: bool = False) -
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def update_schema(
     schemaName: str, schemaJson: str, reload: bool = False, force: bool = False
 ) -> str:
@@ -183,7 +183,7 @@ def update_schema(
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def get_schema(schemaName: str) -> str:
     """Fetch a schema by name"""
     try:
@@ -193,7 +193,7 @@ def get_schema(schemaName: str) -> str:
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def create_table_config(
     tableConfigJson: str, validationTypesToSkip: Optional[str] = None
 ) -> str:
@@ -208,7 +208,7 @@ def create_table_config(
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def update_table_config(
     tableName: str,
     tableConfigJson: str,
@@ -226,7 +226,7 @@ def update_table_config(
         return f"Error: {str(e)}"
 
 
-@mcp.tool(description="test-tool-added-for-params-no-importance")
+@mcp.tool()
 def get_table_config(tableName: str, tableType: Optional[str] = None) -> str:
     """Get table configuration"""
     try:
@@ -253,7 +253,7 @@ def main():
     #     uvicorn.run(
     #         app,
     #         host=server_config.host,
-    mcp.run()
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

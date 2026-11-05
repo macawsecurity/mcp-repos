@@ -406,7 +406,7 @@ Use the available tools to gather this information."""
 def main() -> None:
     """Run the MCP server."""
     logger.info("Starting PostgreSQL MCP Server...")
-    mcp.run()
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

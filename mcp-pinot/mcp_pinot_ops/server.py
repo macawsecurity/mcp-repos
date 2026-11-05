@@ -1,40 +1,4 @@
-"""
-mcp_pinot_ops server (SecureMCP port).
-
-WHAT THIS FILE USED TO DO
-=========================
-The original mcp_pinot_ops server used the low-level MCP Server pattern:
-
-  - One @server.list_prompts / @server.get_prompt pair that
-    advertised a single "pinot-query" prompt.
-  - One @server.list_tools that returned 21 hand-built Tool() objects
-    with literal inputSchema dicts.
-  - One @server.call_tool with a 21-branch if/elif dispatcher that
-    forwarded to pinot_instance methods.
-  - An async main() that wired stdio_server() + server.run() with
-    explicit InitializationOptions and capabilities.
-
-WHAT THIS FILE DOES NOW
-=======================
-Same 21 tools, plus the prompt, but each is a normal SecureMCP
-decorator at module level. Each wrapper:
-
-  - has typed Python kwargs matching the original inputSchema
-  - calls the same pinot_instance.<method>(...) the dispatcher used
-  - returns str(result) to match the original handler's
-    `text=str(results)` shape
-
-The original tool NAMES are preserved verbatim via @app.tool(name=...)
-because they use hyphens (e.g., "list-tables") which can't appear in
-Python function names. Function names use underscores; the public
-mesh-advertised name is the original.
-
-The transport machinery (stdio_server + InitializationOptions +
-capabilities) is dropped -- SecureMCP's app.run() carries traffic via
-the MACAW mesh.
-
-The original code is preserved as comment blocks below for review.
-"""
+"""Apache Pinot table-operations MCP server, running on SecureMCP."""
 
 import logging
 from typing import Any, List, Optional
@@ -755,7 +719,7 @@ def add_startree_index(
 def main():
     """Run the SecureMCP server (sync; SecureMCP owns its asyncio.run())."""
     logger.info("Starting Pinot MCP Table Ops Server on the MACAW mesh")
-    app.run()
+    app.run(transport="stdio")
 
 
 if __name__ == "__main__":

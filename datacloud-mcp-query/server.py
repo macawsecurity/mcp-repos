@@ -107,4 +107,4 @@ if __name__ == "__main__":
     )
 
     logger.info("Starting MCP server")
-    mcp.run()
+    mcp.run(transport="stdio")

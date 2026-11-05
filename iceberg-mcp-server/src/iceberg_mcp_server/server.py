@@ -37,9 +37,7 @@ def get_schema() -> str:
 
 
 def main():
-      transport = os.getenv("MCP_TRANSPORT", "stdio")
-      print(f"Starting Iceberg MCP Server (transport hint: {transport}; ignored by SecureMCP)")
-      mcp.run()
+      mcp.run(transport="stdio")
 
 if __name__ == "__main__":
     main()

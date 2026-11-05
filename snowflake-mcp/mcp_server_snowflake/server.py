@@ -666,8 +666,8 @@ def main():
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     try:
-        logger.info("Starting Snowflake MCP Server on MACAW mesh...")
-        server.run()
+        logger.info("Starting Snowflake MCP Server")
+        server.run(transport="stdio")
     except Exception as e:
         logger.error(f"Error starting MCP server: {e}")
         raise

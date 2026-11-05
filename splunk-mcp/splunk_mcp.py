@@ -935,5 +935,5 @@ async def ping() -> Dict[str, Any]:
 if __name__ == "__main__":
     if os.environ.get("DEBUG", "false").lower() == "true":
         logger.setLevel(logging.DEBUG)
-    logger.info("🚀 Starting Splunk MCP server on the MACAW mesh")
-    mcp.run() 
+    logger.info("🚀 Starting Splunk MCP server")
+    mcp.run(transport="stdio")

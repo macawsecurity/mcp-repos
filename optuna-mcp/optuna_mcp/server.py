@@ -669,7 +669,7 @@ def main() -> None:
 
     mcp = OptunaMCP("Optuna", storage=args.storage)
     mcp = register_tools(mcp)
-    mcp.run()
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

@@ -336,7 +336,7 @@ async def find_delayed_issues(
 
 # --- Standard Execution Block ---
 if __name__ == "__main__":
-    print(f"Starting '{mcp.name}' MCP server...")
+    print(f"Starting '{mcp.name}' MCP server...", file=sys.stderr)
     # Ensure required environment variables are set before running
     if not all([JIRA_URL, JIRA_USERNAME, JIRA_API_TOKEN]):
         print(
@@ -344,4 +344,4 @@ if __name__ == "__main__":
             file=sys.stderr,
         )
         sys.exit(1)
-    mcp.run() # Runs with default stdio transport
+    mcp.run(transport="stdio")
