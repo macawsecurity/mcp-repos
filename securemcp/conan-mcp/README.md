@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [conan-io/conan-mcp](https://github.com/conan-io/conan-mcp) to run on SecureMCP.
 
 # Conan MCP Server
 

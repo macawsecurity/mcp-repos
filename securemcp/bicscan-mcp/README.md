@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [ahnlabio/bicscan-mcp](https://github.com/ahnlabio/bicscan-mcp) to run on SecureMCP.
 
 # BICScan MCP Server
 A powerful and efficient Blockchain address risk scoring API MCP Server, leveraging the BICScan API to provide comprehensive risk assessments and asset information for blockchain addresses, domains, and decentralized applications (dApps).

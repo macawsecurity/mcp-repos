@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [BV-Venky/excalidraw-architect-mcp](https://github.com/BV-Venky/excalidraw-architect-mcp) to run on SecureMCP.
 
 # Excalidraw Architect MCP
 <!-- mcp-name: io.github.BV-Venky/excalidraw-architect-mcp -->

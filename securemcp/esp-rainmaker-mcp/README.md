@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [espressif/esp-rainmaker-mcp](https://github.com/espressif/esp-rainmaker-mcp) to run on SecureMCP.
 
 # ESP RainMaker MCP Server
 

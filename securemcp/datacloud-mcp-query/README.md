@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [forcedotcom/datacloud-mcp-query](https://github.com/forcedotcom/datacloud-mcp-query) to run on SecureMCP.
 
 # Data 360 Query MCP Server
 

@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [ydb-platform/ydb-mcp](https://github.com/ydb-platform/ydb-mcp) to run on SecureMCP.
 
 # YDB MCP
 ---

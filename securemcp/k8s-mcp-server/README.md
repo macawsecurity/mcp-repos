@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [alexei-led/k8s-mcp-server](https://github.com/alexei-led/k8s-mcp-server) to run on SecureMCP.
 
 # K8s MCP Server
 

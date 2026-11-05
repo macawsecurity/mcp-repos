@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [optuna/optuna-mcp](https://github.com/optuna/optuna-mcp) to run on SecureMCP.
 
 # Optuna MCP Server
 

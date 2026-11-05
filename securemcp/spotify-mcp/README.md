@@ -1,4 +1,6 @@
 > **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+>
+> Modified from [varunneal/spotify-mcp](https://github.com/varunneal/spotify-mcp) to run on SecureMCP.
 
 # spotify-mcp MCP server
 
