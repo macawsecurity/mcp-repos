@@ -1,7 +1,7 @@
 import json
 from typing import Annotated, Any, Literal, Union, get_args
 
-from fastmcp import FastMCP
+from macaw_adapters.mcp import SecureMCP
 from pydantic import Field
 from snowflake.core import CreateMode, Root
 
@@ -188,7 +188,7 @@ def parse_object(target_object: Any, obj_type: supported_objects):
         return target_object
 
 
-def initialize_object_manager_tools(server: FastMCP, snowflake_service):
+def initialize_object_manager_tools(server: SecureMCP, snowflake_service):
     root = snowflake_service.root
     supported_objects_list = list(get_args(supported_objects))
     object_type_annotation = Annotated[

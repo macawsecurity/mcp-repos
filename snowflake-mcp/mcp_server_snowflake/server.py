@@ -22,7 +22,7 @@ import yaml
 # ----------------------------------------------------------------------
 # was: from fastmcp import FastMCP
 from macaw_adapters.mcp import SecureMCP
-from fastmcp.utilities.logging import get_logger
+from logging import getLogger as get_logger
 from snowflake.connector import DictCursor, connect
 from snowflake.core import Root
 

@@ -1,7 +1,7 @@
 from typing import Annotated
 
 import sqlglot
-from fastmcp import FastMCP
+from macaw_adapters.mcp import SecureMCP
 from pydantic import Field
 
 from mcp_server_snowflake.query_manager.prompts import query_tool_prompt
@@ -50,7 +50,7 @@ def run_query(statement: str, snowflake_service):
         )
 
 
-def initialize_query_manager_tool(server: FastMCP, snowflake_service):
+def initialize_query_manager_tool(server: SecureMCP, snowflake_service):
     @server.tool(
         name="run_snowflake_query",
         description=query_tool_prompt,

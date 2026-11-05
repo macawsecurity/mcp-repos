@@ -12,7 +12,7 @@
 from typing import Annotated, Optional
 
 import requests
-from fastmcp import FastMCP
+from macaw_adapters.mcp import SecureMCP
 from pydantic import Field
 
 from mcp_server_snowflake.cortex_services.prompts import (
@@ -278,7 +278,7 @@ async def query_cortex_analyst(
         )
 
 
-def initialize_cortex_agent_tool(server: FastMCP, snowflake_service):
+def initialize_cortex_agent_tool(server: SecureMCP, snowflake_service):
     if snowflake_service.agent_services:
 
         @server.tool(
@@ -312,7 +312,7 @@ def initialize_cortex_agent_tool(server: FastMCP, snowflake_service):
             )
 
 
-def initialize_cortex_search_tool(server: FastMCP, snowflake_service):
+def initialize_cortex_search_tool(server: SecureMCP, snowflake_service):
     if snowflake_service.search_services:
 
         @server.tool(
@@ -365,7 +365,7 @@ def initialize_cortex_search_tool(server: FastMCP, snowflake_service):
             )
 
 
-def initialize_cortex_analyst_tool(server: FastMCP, snowflake_service):
+def initialize_cortex_analyst_tool(server: SecureMCP, snowflake_service):
     if snowflake_service.analyst_services:
 
         @server.tool(

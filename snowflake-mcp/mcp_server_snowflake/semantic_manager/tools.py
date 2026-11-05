@@ -1,6 +1,6 @@
 from typing import Annotated, Literal
 
-from fastmcp import FastMCP
+from macaw_adapters.mcp import SecureMCP
 from pydantic import Field
 
 from mcp_server_snowflake.semantic_manager.objects import SemanticExpression
@@ -288,7 +288,7 @@ def validate_semantic_view_tool(
     return (func_type, valid)
 
 
-def initialize_semantic_manager_tools(server: FastMCP, snowflake_service):
+def initialize_semantic_manager_tools(server: SecureMCP, snowflake_service):
     @server.tool(
         name="list_semantic_views",
         description="List all semantic views in the account, database, or schema.",

@@ -59,3 +59,5 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = "ydb.*"
 ignore_missing_imports = true
+[tool.setuptools.packages.find]
+include = ["ydb_mcp*"]

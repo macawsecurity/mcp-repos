@@ -12,7 +12,7 @@
 from pathlib import Path
 from urllib.parse import urljoin
 
-from fastmcp.utilities.logging import get_logger
+from logging import getLogger as get_logger
 
 logger = get_logger(__name__)
 

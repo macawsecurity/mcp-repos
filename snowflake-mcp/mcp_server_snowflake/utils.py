@@ -19,7 +19,7 @@ from typing import Awaitable, Callable, Optional, TypeVar, Union
 
 import requests
 import yaml
-from fastmcp.utilities.logging import get_logger
+from logging import getLogger as get_logger
 from pydantic import BaseModel
 from typing_extensions import ParamSpec
 

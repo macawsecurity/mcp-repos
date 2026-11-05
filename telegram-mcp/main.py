@@ -16,7 +16,10 @@ from urllib.parse import unquote, urlparse
 # Third-party libraries
 from dotenv import load_dotenv
 from macaw_adapters.mcp import SecureMCP, Context
-from mcp.shared.exceptions import McpError
+try:
+    from mcp.shared.exceptions import McpError
+except ImportError:  # mcp 2.x renamed it
+    from mcp.shared.exceptions import MCPError as McpError
 from pythonjsonlogger import jsonlogger
 from telethon import TelegramClient, functions, types, utils
 from telethon.sessions import StringSession
