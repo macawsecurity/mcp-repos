@@ -689,7 +689,7 @@ If you need help, have found a bug, or want to contribute improvements, the best
 
 If you're interested in contributing code or setting up a development environment:
 
-📖 **See [CONTRIBUTING.md](CONTRIBUTING.md)** for comprehensive developer setup instructions, including:
+📖 **See [CONTRIBUTING.md](https://github.com/couchbase/mcp-server-couchbase/blob/main/CONTRIBUTING.md)** for comprehensive developer setup instructions, including:
 
 - Development environment setup with `uv`
 - Code linting and formatting with Ruff

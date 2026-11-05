@@ -130,7 +130,7 @@ The project is structured into feature modules, each implementing specific Azure
 - `features/teams`: Team management features
 - `utils`: Common utilities and client initialization
 
-For more information on development, see the [CLAUDE.md](CLAUDE.md) file.
+For more information on development, see the [CLAUDE.md](https://github.com/Vortiago/mcp-azure-devops/blob/main/CLAUDE.md) file.
 
 ## Contributing
 

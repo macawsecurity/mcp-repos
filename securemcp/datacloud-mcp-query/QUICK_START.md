@@ -178,4 +178,4 @@ If you see errors, fix them before adding to Cursor.
 
 - Full documentation: [README.md](README.md)
 - Connected App setup: [CONNECTED_APP_SETUP.md](CONNECTED_APP_SETUP.md)
-- Architecture details: [CLAUDE.md](CLAUDE.md)
+- Architecture details: [CLAUDE.md](https://github.com/forcedotcom/datacloud-mcp-query/blob/main/CLAUDE.md)
