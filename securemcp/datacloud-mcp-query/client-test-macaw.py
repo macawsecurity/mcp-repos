@@ -157,8 +157,8 @@ async def main():
     await run("D5 query with >5000-char sql (expect DENY: sql exceeds maximum length 5000)",
               "query", {"sql": "SELECT '" + ("A" * 5200) + "' AS x"})
 
-    await run("A1 query w/ 'DROP' literal (expect BLOCK -> allow_destroy/role:manager)",
-              "query", {"sql": "SELECT 'pretend DROP' AS note", "dataspace": "default"})
+    await run("A1 query with DROP (expect DENY: sql fails the policy pattern)",
+              "query", {"sql": "DROP TABLE t", "dataspace": "default"})
 
 
    

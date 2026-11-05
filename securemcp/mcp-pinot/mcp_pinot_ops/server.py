@@ -34,18 +34,11 @@ capabilities) is dropped -- SecureMCP's app.run() carries traffic via
 the MACAW mesh.
 
 The original code is preserved as comment blocks below for review.
-See MIGRATION.txt for the full port plan.
 """
 
 import logging
 from typing import Any, List, Optional
 
-# import asyncio                                          # PORT: not needed; SecureMCP owns asyncio.run()
-# import sys                                              # PORT: only used by the dropped error-printing in original main()
-# from mcp.server import NotificationOptions, Server      # PORT
-# from mcp.server.models import InitializationOptions     # PORT
-# import mcp.server.stdio                                 # PORT
-# import mcp.types as types                               # PORT
 from macaw_adapters.mcp import SecureMCP
 
 from mcp_pinot_ops.prompts import PROMPT_TEMPLATE
@@ -58,14 +51,10 @@ logger.setLevel(logging.INFO)
 # (Module-level singleton: same semantic as the original.)
 pinot_instance = Pinot()
 
-# PORT: was `server = Server(...)` inside async main(). Move it to module
-# level so @app.tool decorators fire at import time -- the standard
-# SecureMCP pattern.
 app = SecureMCP("pinot_mcp_table_ops_claude")
 
 
 # ======================================================================
-# PORT NOTE -- Prompt
 # ----------------------------------------------------------------------
 # Original had @server.list_prompts (returning one Prompt named
 # "pinot-query") AND @server.get_prompt (returning the PROMPT_TEMPLATE
@@ -108,7 +97,6 @@ def pinot_query_prompt() -> str:
 
 
 # ======================================================================
-# PORT NOTE -- 21 tools
 # ----------------------------------------------------------------------
 # The original had @server.list_tools (returning 21 Tool objects with
 # literal inputSchema dicts) and @server.call_tool (a 21-branch if/elif
@@ -713,7 +701,6 @@ def add_startree_index(
 
 
 # ======================================================================
-# PORT NOTE -- entry point
 # ----------------------------------------------------------------------
 # Original async main() did:
 #   - server = Server("pinot_mcp_table_ops_claude")

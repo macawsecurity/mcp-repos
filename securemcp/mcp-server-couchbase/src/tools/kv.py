@@ -12,7 +12,6 @@ This module contains tools for document operations by ID:
 import logging
 from typing import Any
 
-# PORT: from mcp.server.fastmcp import Context
 from macaw_adapters.mcp import Context
 
 from utils.connection import connect_to_bucket
@@ -32,8 +31,6 @@ def get_document_by_id(
     """Get a document by its ID from the specified scope and collection.
     If the document is not found, it will raise an exception."""
 
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     bucket = connect_to_bucket(cluster, bucket_name)
     try:
@@ -61,8 +58,6 @@ def upsert_document_by_id(
     DO NOT use this as a fallback when insert_document_by_id or replace_document_by_id fails.
 
     Returns True on success, False on failure."""
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     bucket = connect_to_bucket(cluster, bucket_name)
     try:
@@ -84,8 +79,6 @@ def delete_document_by_id(
 ) -> bool:
     """Delete a document by its ID.
     Returns True on success, False on failure."""
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     bucket = connect_to_bucket(cluster, bucket_name)
     try:
@@ -112,8 +105,6 @@ def insert_document_by_id(
     Report the failure to the user. They can choose to 'replace' or 'upsert' if desired.
 
     Returns True on success, False on failure (including if document already exists)."""
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     bucket = connect_to_bucket(cluster, bucket_name)
     try:
@@ -140,8 +131,6 @@ def replace_document_by_id(
     Report the failure to the user. They can choose to 'insert' or 'upsert' if desired.
 
     Returns True on success, False on failure (including if document does not exist)."""
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     bucket = connect_to_bucket(cluster, bucket_name)
     try:

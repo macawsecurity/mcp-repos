@@ -253,20 +253,6 @@ def main():
     #     uvicorn.run(
     #         app,
     #         host=server_config.host,
-    #         port=server_config.port,
-    #         ssl_keyfile=server_config.ssl_keyfile,
-    #         ssl_certfile=server_config.ssl_certfile,
-    #     )
-    # elif server_config.transport == "stdio":
-    #     # stdio transport - no configuration needed
-    #     mcp.run(transport=server_config.transport)
-    # else:
-    #     mcp.run(
-    #         transport=server_config.transport,
-    #         host=server_config.host,
-    #         port=server_config.port,
-    #         path=server_config.path,
-    #     )
     mcp.run()
 
 

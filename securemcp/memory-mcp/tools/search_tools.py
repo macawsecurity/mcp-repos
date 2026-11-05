@@ -1,6 +1,4 @@
 from typing import Any, Dict, List
-# PORT: FastMCP -> SecureMCP (type hint only; decorator API matches).
-# from fastmcp import FastMCP
 from macaw_adapters.mcp import SecureMCP
 from bson import ObjectId
 from services.mongodb_service import get_mongodb_service

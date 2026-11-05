@@ -391,7 +391,6 @@ async def test_splunk_connection_params():
             # Check if connect was called with the proper parameters
             call_kwargs = mock_connect.call_args[1]
             assert call_kwargs["host"] == "custom-host"
-            # Port might be converted to int by the function
             assert str(call_kwargs["port"]) == "8888"
             assert call_kwargs["username"] == "custom-user"
             assert call_kwargs["password"] == "custom-pass"

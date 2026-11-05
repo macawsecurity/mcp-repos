@@ -1,8 +1,6 @@
-# from mcp.server.fastmcp import FastMCP    # PORT
 from macaw_adapters.mcp import SecureMCP
 
 
-# PORT: type hint was `mcp: FastMCP`
 def register_prompt(mcp: SecureMCP) -> None:
     
     @mcp.prompt(name="Create Conventions File", 

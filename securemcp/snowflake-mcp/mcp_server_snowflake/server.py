@@ -19,10 +19,6 @@ from typing import Any, Dict, Generator, Literal, Optional, Tuple, cast
 
 import yaml
 # ----------------------------------------------------------------------
-# PORT: framework swap. FastMCP -> SecureMCP.
-# Same `name=...` constructor surface; no `lifespan=` kwarg in SecureMCP.
-# Other FastMCP-only kwargs that used to be supported (host, port, debug,
-# log_level, instructions) are also gone -- handled in main() below.
 # ----------------------------------------------------------------------
 # was: from fastmcp import FastMCP
 from macaw_adapters.mcp import SecureMCP
@@ -45,12 +41,6 @@ from mcp_server_snowflake.semantic_manager.tools import (
     initialize_semantic_manager_tools,
 )
 # ----------------------------------------------------------------------
-# PORT: middleware -> post-registration wrapper installer.
-# initialize_middleware attached a fastmcp-v2 Middleware class via
-# server.add_middleware(...). SecureMCP has no middleware system, so the
-# replacement is install_query_check, which walks server._tools after
-# registration and wraps the SQL-touching handlers in place. Same dispatch
-# rules as the old middleware (see server_utils.py for the full diff).
 # ----------------------------------------------------------------------
 # was: from mcp_server_snowflake.server_utils import initialize_middleware
 from mcp_server_snowflake.server_utils import install_query_check
@@ -640,38 +630,6 @@ def main():
     warn_deprecated_params()
 
     # ----------------------------------------------------------------------
-    # PORT: build SnowflakeService eagerly in main()
-    #
-    # ORIGINAL: SnowflakeService was built inside the @asynccontextmanager
-    # lifespan function (create_snowflake_service in create_lifespan above).
-    # FastMCP would call the lifespan automatically at startup. The body
-    # looked like:
-    #
-    #     @asynccontextmanager
-    #     async def create_snowflake_service(server: FastMCP):
-    #         connection_params = {
-    #             key: getattr(args, key)
-    #             for key in get_login_params().keys()
-    #             if getattr(args, key) is not None
-    #         }
-    #         service_config_file = get_var(
-    #             "service_config_file", "SERVICE_CONFIG_FILE", args
-    #         )
-    #         endpoint = os.environ.get("SNOWFLAKE_MCP_ENDPOINT", args.endpoint)
-    #         snowflake_service = SnowflakeService(
-    #             service_config_file=service_config_file,
-    #             transport=args.transport,
-    #             connection_params=connection_params,
-    #             endpoint=endpoint or args.endpoint,
-    #         )
-    #         initialize_tools(snowflake_service, server)
-    #         initialize_middleware(server, snowflake_service)
-    #         initialize_resources(snowflake_service, server)
-    #         yield snowflake_service
-    #
-    # NEW: SecureMCP has no lifespan hook. Same body, just run in main()
-    # before server.run(). initialize_tools/resources are also called below;
-    # initialize_middleware is replaced by install_query_check.
     # ----------------------------------------------------------------------
     connection_params = {
         key: getattr(args, key)
@@ -690,16 +648,6 @@ def main():
     )
 
     # ----------------------------------------------------------------------
-    # PORT: server construction
-    #
-    # ORIGINAL (FastMCP — used the lifespan kwarg so the server builder
-    # auto-ran create_lifespan() on startup, which built SnowflakeService,
-    # registered tools/resources, and added the middleware before yield):
-    #
-    #     server = FastMCP("Snowflake MCP Server", lifespan=create_lifespan(args))
-    #
-    # NEW (SecureMCP — no lifespan kwarg; we did the lifespan body above
-    # and we register tools/resources/check by hand below):
     # ----------------------------------------------------------------------
     server = SecureMCP("snowflake-mcp")
 
@@ -716,33 +664,6 @@ def main():
     )
 
     # ----------------------------------------------------------------------
-    # PORT: server.run()
-    #
-    # ORIGINAL (FastMCP — branched on the transport flag and called the
-    # built-in HTTP server with host/port/path for the HTTP variants):
-    #
-    #     try:
-    #         logger.info("Starting Snowflake MCP Server...")
-    #         if args.transport and args.transport in [
-    #             "http",
-    #             "sse",
-    #             "streamable-http",
-    #         ]:
-    #             host = os.environ.get("SNOWFLAKE_MCP_HOST", args.server_host)
-    #             port = int(os.environ.get("SNOWFLAKE_MCP_PORT", str(args.port)))
-    #             endpoint = os.environ.get("SNOWFLAKE_MCP_ENDPOINT", args.endpoint)
-    #             logger.info(f"Starting server with transport: {args.transport}")
-    #             server.run(transport=args.transport, host=host, port=port, path=endpoint)
-    #         else:
-    #             logger.info(f"Starting server with transport: {args.transport or 'stdio'}")
-    #             server.run(transport=args.transport or "stdio")
-    #     except Exception as e:
-    #         logger.error(f"Error starting MCP server: {e}")
-    #         raise
-    #
-    # NEW (SecureMCP — transport is the MACAW mesh; no HTTP server exists
-    # under SecureMCP so the transport branching is gone. The cleanup that
-    # used to live in the lifespan's `finally` block now lives here):
     # ----------------------------------------------------------------------
     try:
         logger.info("Starting Snowflake MCP Server on MACAW mesh...")

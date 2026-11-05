@@ -14,12 +14,9 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 # Third-party libraries
-# import nest_asyncio                                    # PORT: not needed; SecureMCP owns its single asyncio.run()
 from dotenv import load_dotenv
-# from mcp.server.fastmcp import FastMCP, Context        # PORT
-# from mcp.types import ToolAnnotations                  # PORT: SecureMCP @mcp.tool() does not accept annotations=
 from macaw_adapters.mcp import SecureMCP, Context
-from mcp.shared.exceptions import McpError                # PORT: KEPT -- exception class only, used at line 685
+from mcp.shared.exceptions import McpError
 from pythonjsonlogger import jsonlogger
 from telethon import TelegramClient, functions, types, utils
 from telethon.sessions import StringSession
@@ -93,7 +90,6 @@ load_dotenv()
 TELEGRAM_API_ID = int(os.getenv("TELEGRAM_API_ID"))
 TELEGRAM_API_HASH = os.getenv("TELEGRAM_API_HASH")
 
-# mcp = FastMCP("telegram")    # PORT
 mcp = SecureMCP("telegram")
 
 
@@ -704,8 +700,6 @@ async def _get_effective_allowed_roots_with_status(
     ctx: Optional[Context],
 ) -> tuple[List[Path], str]:
     # ==================================================================
-    # PORT NOTE -- Path A active (server-side roots only).
-    # See MIGRATION.txt for the full A vs B trade-off.
     # ------------------------------------------------------------------
     # Original used `await ctx.session.list_roots()` -- the MCP-protocol
     # capability for the CLIENT to declare its filesystem roots at
@@ -715,8 +709,7 @@ async def _get_effective_allowed_roots_with_status(
     #
     # We chose Path A: the server's --allowed-root CLI args are the
     # only source of authorization. The ctx argument is kept in the
-    # signature for API stability but not consulted for roots; we
-    # document this loss as BROKEN ON PURPOSE in MIGRATION.txt.
+    # signature for API stability but not consulted for roots.
     #
     # Path B (preserved below as commented alternative): clients call
     # a new `register_roots` tool once per session and roots get
@@ -919,7 +912,6 @@ def _configure_allowed_roots_from_cli(argv: Optional[List[str]] = None) -> None:
 
 
 # ======================================================================
-# PORT: PATH B ALTERNATIVE (NOT ACTIVE).
 # ----------------------------------------------------------------------
 # Preserved as a commented reference for future maintainers. We chose
 # Path A (server-side CLI roots only). Path B would expose a tool that
@@ -982,7 +974,6 @@ def _configure_allowed_roots_from_cli(argv: Optional[List[str]] = None) -> None:
 #     }
 
 
-# @mcp.tool(annotations=ToolAnnotations(title="List Accounts", readOnlyHint=True))    # PORT: stripped annotations=
 @mcp.tool()
 async def list_accounts() -> str:
     """List all configured Telegram accounts with profile info."""
@@ -1004,7 +995,7 @@ async def list_accounts() -> str:
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get Chats", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_chats(account: str = None, page: int = 1, page_size: int = 20) -> str:
     """
@@ -1034,7 +1025,7 @@ async def get_chats(account: str = None, page: int = 1, page_size: int = 20) -> 
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get Messages", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_messages(
@@ -1077,7 +1068,7 @@ async def get_messages(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Send Message", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def send_message(
@@ -1112,7 +1103,7 @@ async def send_message(
 #         idempotentHint=False,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def send_scheduled_message(
@@ -1176,7 +1167,7 @@ async def send_scheduled_message(
 #         title="Get Scheduled Messages", openWorldHint=True, readOnlyHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_scheduled_messages(chat_id: Union[int, str], account: str = None) -> str:
@@ -1212,7 +1203,7 @@ async def get_scheduled_messages(chat_id: Union[int, str], account: str = None) 
 #         title="Delete Scheduled Message", openWorldHint=True, destructiveHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def delete_scheduled_message(
@@ -1253,7 +1244,7 @@ async def delete_scheduled_message(
 #         idempotentHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("channel")
 async def subscribe_public_channel(channel: Union[int, str], account: str = None) -> str:
@@ -1278,7 +1269,7 @@ async def subscribe_public_channel(channel: Union[int, str], account: str = None
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="List Inline Buttons", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def list_inline_buttons(
@@ -1362,7 +1353,7 @@ async def list_inline_buttons(
 #         title="Press Inline Button", openWorldHint=True, destructiveHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def press_inline_button(
@@ -1508,7 +1499,7 @@ async def press_inline_button(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="List Contacts", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def list_contacts(account: str = None) -> str:
     """
@@ -1540,7 +1531,7 @@ async def list_contacts(account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Search Contacts", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def search_contacts(query: str, account: str = None) -> str:
     """
@@ -1574,7 +1565,7 @@ async def search_contacts(query: str, account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Contact Ids", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_contact_ids(account: str = None) -> str:
     """
@@ -1594,7 +1585,7 @@ async def get_contact_ids(account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="List Messages", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def list_messages(
@@ -1723,7 +1714,7 @@ async def list_messages(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="List Topics", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def list_topics(
     chat_id: int,
@@ -1814,7 +1805,7 @@ async def list_topics(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="List Chats", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def list_chats(
     account: str = None,
@@ -1955,7 +1946,7 @@ async def list_chats(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get Chat", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_chat(chat_id: Union[int, str], account: str = None) -> str:
@@ -2034,7 +2025,7 @@ async def get_chat(chat_id: Union[int, str], account: str = None) -> str:
 #         title="Get Direct Chat By Contact", openWorldHint=True, readOnlyHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_direct_chat_by_contact(contact_query: str, account: str = None) -> str:
     """
@@ -2095,7 +2086,7 @@ async def get_direct_chat_by_contact(contact_query: str, account: str = None) ->
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Contact Chats", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("contact_id")
 async def get_contact_chats(contact_id: Union[int, str], account: str = None) -> str:
@@ -2155,7 +2146,7 @@ async def get_contact_chats(contact_id: Union[int, str], account: str = None) ->
 #         title="Get Last Interaction", openWorldHint=True, readOnlyHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("contact_id")
 async def get_last_interaction(contact_id: Union[int, str], account: str = None) -> str:
@@ -2197,7 +2188,7 @@ async def get_last_interaction(contact_id: Union[int, str], account: str = None)
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Message Context", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_message_context(
@@ -2274,7 +2265,7 @@ async def get_message_context(
 #         title="Add Contact", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def add_contact(
     account: str = None,
@@ -2412,7 +2403,7 @@ async def add_contact(
 #         title="Delete Contact", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("user_id")
 async def delete_contact(user_id: Union[int, str], account: str = None) -> str:
@@ -2435,7 +2426,7 @@ async def delete_contact(user_id: Union[int, str], account: str = None) -> str:
 #         title="Block User", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("user_id")
 async def block_user(user_id: Union[int, str], account: str = None) -> str:
@@ -2458,7 +2449,7 @@ async def block_user(user_id: Union[int, str], account: str = None) -> str:
 #         title="Unblock User", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("user_id")
 async def unblock_user(user_id: Union[int, str], account: str = None) -> str:
@@ -2477,7 +2468,7 @@ async def unblock_user(user_id: Union[int, str], account: str = None) -> str:
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get Me", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_me(account: str = None) -> str:
     """
@@ -2495,7 +2486,7 @@ async def get_me(account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Create Group", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("user_ids")
 async def create_group(title: str, user_ids: List[Union[int, str]], account: str = None) -> str:
@@ -2561,7 +2552,7 @@ async def create_group(title: str, user_ids: List[Union[int, str]], account: str
 #         title="Invite To Group", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("group_id", "user_ids")
 async def invite_to_group(
@@ -2620,7 +2611,7 @@ async def invite_to_group(
 #         title="Leave Chat", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def leave_chat(chat_id: Union[int, str], account: str = None) -> str:
@@ -2706,7 +2697,7 @@ async def leave_chat(chat_id: Union[int, str], account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Participants", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_participants(chat_id: Union[int, str], account: str = None) -> str:
@@ -2729,7 +2720,7 @@ async def get_participants(chat_id: Union[int, str], account: str = None) -> str
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Send File", openWorldHint=True, destructiveHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def send_file(
@@ -2767,7 +2758,7 @@ async def send_file(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Download Media", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def download_media(
@@ -2834,7 +2825,7 @@ async def download_media(
 #         title="Update Profile", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def update_profile(
     account: str = None, first_name: str = None, last_name: str = None, about: str = None
@@ -2862,7 +2853,7 @@ async def update_profile(
 #         title="Set Profile Photo", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def set_profile_photo(
     file_path: str, ctx: Optional[Context] = None, account: str = None
@@ -2893,7 +2884,7 @@ async def set_profile_photo(
 #         title="Delete Profile Photo", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def delete_profile_photo(account: str = None) -> str:
     """
@@ -2918,7 +2909,7 @@ async def delete_profile_photo(account: str = None) -> str:
 #         title="Get Privacy Settings", openWorldHint=True, readOnlyHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_privacy_settings(account: str = None) -> str:
     """
@@ -2950,7 +2941,7 @@ async def get_privacy_settings(account: str = None) -> str:
 #         title="Set Privacy Settings", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("allow_users", "disallow_users")
 async def set_privacy_settings(
@@ -3051,7 +3042,7 @@ async def set_privacy_settings(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Import Contacts", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def import_contacts(contacts: list, account: str = None) -> str:
     """
@@ -3078,7 +3069,7 @@ async def import_contacts(contacts: list, account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Export Contacts", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def export_contacts(account: str = None) -> str:
     """
@@ -3097,7 +3088,7 @@ async def export_contacts(account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Blocked Users", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_blocked_users(account: str = None) -> str:
     """
@@ -3115,7 +3106,7 @@ async def get_blocked_users(account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Create Channel", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def create_channel(
     title: str, about: str = "", megagroup: bool = False, account: str = None
@@ -3141,7 +3132,7 @@ async def create_channel(
 #         title="Edit Chat Title", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def edit_chat_title(chat_id: Union[int, str], title: str, account: str = None) -> str:
@@ -3168,7 +3159,7 @@ async def edit_chat_title(chat_id: Union[int, str], title: str, account: str = N
 #         title="Edit Chat Photo", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def edit_chat_photo(
@@ -3218,7 +3209,7 @@ async def edit_chat_photo(
 #         idempotentHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def edit_chat_about(chat_id: Union[int, str], about: str, account: str = None) -> str:
@@ -3251,7 +3242,7 @@ async def edit_chat_about(chat_id: Union[int, str], about: str, account: str = N
 #         title="Delete Chat Photo", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def delete_chat_photo(chat_id: Union[int, str], account: str = None) -> str:
@@ -3287,7 +3278,7 @@ async def delete_chat_photo(chat_id: Union[int, str], account: str = None) -> st
 #         title="Promote Admin", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("group_id", "user_id")
 async def promote_admin(
@@ -3364,7 +3355,7 @@ async def promote_admin(
 #         title="Demote Admin", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("group_id", "user_id")
 async def demote_admin(
@@ -3422,7 +3413,7 @@ async def demote_admin(
 #         title="Ban User", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id", "user_id")
 async def ban_user(chat_id: Union[int, str], user_id: Union[int, str], account: str = None) -> str:
@@ -3476,7 +3467,7 @@ async def ban_user(chat_id: Union[int, str], user_id: Union[int, str], account: 
 #         title="Unban User", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id", "user_id")
 async def unban_user(
@@ -3535,7 +3526,7 @@ async def unban_user(
 #         idempotentHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def set_default_chat_permissions(
@@ -3616,7 +3607,7 @@ async def set_default_chat_permissions(
 #         idempotentHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def toggle_slow_mode(chat_id: Union[int, str], seconds: int = 0, account: str = None) -> str:
@@ -3655,7 +3646,7 @@ async def toggle_slow_mode(chat_id: Union[int, str], seconds: int = 0, account: 
 #         idempotentHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id", "user_id")
 async def edit_admin_rights(
@@ -3734,7 +3725,7 @@ async def edit_admin_rights(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get Admins", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_admins(chat_id: Union[int, str], account: str = None) -> str:
@@ -3759,7 +3750,7 @@ async def get_admins(chat_id: Union[int, str], account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Banned Users", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_banned_users(chat_id: Union[int, str], account: str = None) -> str:
@@ -3784,7 +3775,7 @@ async def get_banned_users(chat_id: Union[int, str], account: str = None) -> str
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Invite Link", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_invite_link(chat_id: Union[int, str], account: str = None) -> str:
@@ -3835,7 +3826,7 @@ async def get_invite_link(chat_id: Union[int, str], account: str = None) -> str:
 #         title="Join Chat By Link", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def join_chat_by_link(link: str, account: str = None) -> str:
     """
@@ -3885,7 +3876,7 @@ async def join_chat_by_link(link: str, account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Export Chat Invite", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def export_chat_invite(chat_id: Union[int, str], account: str = None) -> str:
@@ -3927,7 +3918,7 @@ async def export_chat_invite(chat_id: Union[int, str], account: str = None) -> s
 #         title="Import Chat Invite", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def import_chat_invite(hash: str, account: str = None) -> str:
     """
@@ -3990,7 +3981,7 @@ async def import_chat_invite(hash: str, account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Send Voice", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def send_voice(
@@ -4037,7 +4028,7 @@ async def send_voice(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Upload File", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def upload_file(file_path: str, ctx: Optional[Context] = None, account: str = None) -> str:
     """
@@ -4072,7 +4063,7 @@ async def upload_file(file_path: str, ctx: Optional[Context] = None, account: st
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Forward Message", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("from_chat_id", "to_chat_id")
 async def forward_message(
@@ -4105,7 +4096,7 @@ async def forward_message(
 #         title="Edit Message", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def edit_message(
@@ -4130,7 +4121,7 @@ async def edit_message(
 #         title="Delete Message", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def delete_message(chat_id: Union[int, str], message_id: int, account: str = None) -> str:
@@ -4154,7 +4145,7 @@ async def delete_message(chat_id: Union[int, str], message_id: int, account: str
 #         idempotentHint=False,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def delete_chat_history(
@@ -4202,7 +4193,7 @@ async def delete_chat_history(
 #         idempotentHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def delete_messages_bulk(
@@ -4252,7 +4243,7 @@ async def delete_messages_bulk(
 #         title="Pin Message", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def pin_message(chat_id: Union[int, str], message_id: int, account: str = None) -> str:
@@ -4273,7 +4264,7 @@ async def pin_message(chat_id: Union[int, str], message_id: int, account: str = 
 #         title="Unpin Message", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def unpin_message(chat_id: Union[int, str], message_id: int, account: str = None) -> str:
@@ -4297,7 +4288,7 @@ async def unpin_message(chat_id: Union[int, str], message_id: int, account: str 
 #         idempotentHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def unpin_all_messages(chat_id: Union[int, str], account: str = None) -> str:
@@ -4324,7 +4315,7 @@ async def unpin_all_messages(chat_id: Union[int, str], account: str = None) -> s
 #         title="Mark As Read", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def mark_as_read(chat_id: Union[int, str], account: str = None) -> str:
@@ -4343,7 +4334,7 @@ async def mark_as_read(chat_id: Union[int, str], account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Reply To Message", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def reply_to_message(
@@ -4377,7 +4368,7 @@ async def reply_to_message(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Media Info", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_media_info(chat_id: Union[int, str], message_id: int, account: str = None) -> str:
@@ -4404,7 +4395,7 @@ async def get_media_info(chat_id: Union[int, str], message_id: int, account: str
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Search Public Chats", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def search_public_chats(query: str, limit: int = 20, account: str = None) -> str:
     """
@@ -4423,7 +4414,7 @@ async def search_public_chats(query: str, limit: int = 20, account: str = None) 
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Search Messages", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def search_messages(
@@ -4460,7 +4451,7 @@ async def search_messages(
 #         readOnlyHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def search_global(
     query: str, page: int = 1, page_size: int = 20, account: str = None
@@ -4499,7 +4490,7 @@ async def search_global(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Resolve Username", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def resolve_username(username: str, account: str = None) -> str:
     """
@@ -4517,7 +4508,7 @@ async def resolve_username(username: str, account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Full User", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_full_user(username: Union[int, str], account: str = None) -> str:
     """
@@ -4570,7 +4561,7 @@ async def get_full_user(username: Union[int, str], account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Full Chat", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_full_chat(chat_id: Union[int, str], account: str = None) -> str:
     """
@@ -4607,7 +4598,7 @@ async def get_full_chat(chat_id: Union[int, str], account: str = None) -> str:
 #         title="Mute Chat", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def mute_chat(chat_id: Union[int, str], account: str = None) -> str:
@@ -4653,7 +4644,7 @@ async def mute_chat(chat_id: Union[int, str], account: str = None) -> str:
 #         title="Unmute Chat", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def unmute_chat(chat_id: Union[int, str], account: str = None) -> str:
@@ -4699,7 +4690,7 @@ async def unmute_chat(chat_id: Union[int, str], account: str = None) -> str:
 #         title="Archive Chat", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def archive_chat(chat_id: Union[int, str], account: str = None) -> str:
@@ -4725,7 +4716,7 @@ async def archive_chat(chat_id: Union[int, str], account: str = None) -> str:
 #         title="Unarchive Chat", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def unarchive_chat(chat_id: Union[int, str], account: str = None) -> str:
@@ -4749,7 +4740,7 @@ async def unarchive_chat(chat_id: Union[int, str], account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Sticker Sets", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_sticker_sets(account: str = None) -> str:
     """
@@ -4767,7 +4758,7 @@ async def get_sticker_sets(account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Send Sticker", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def send_sticker(
@@ -4803,7 +4794,7 @@ async def send_sticker(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Gif Search", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_gif_search(query: str, limit: int = 10, account: str = None) -> str:
     """
@@ -4863,7 +4854,7 @@ async def get_gif_search(query: str, limit: int = 10, account: str = None) -> st
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Send Gif", openWorldHint=True, destructiveHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def send_gif(chat_id: Union[int, str], gif_id: int, account: str = None) -> str:
@@ -4888,7 +4879,7 @@ async def send_gif(chat_id: Union[int, str], gif_id: int, account: str = None) -
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Send Contact", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def send_contact(
@@ -4934,7 +4925,7 @@ async def send_contact(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get Bot Info", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_bot_info(bot_username: str, account: str = None) -> str:
     """
@@ -4977,7 +4968,7 @@ async def get_bot_info(bot_username: str, account: str = None) -> str:
 #         title="Set Bot Commands", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def set_bot_commands(bot_username: str, commands: list, account: str = None) -> str:
     """
@@ -5027,7 +5018,7 @@ async def set_bot_commands(bot_username: str, commands: list, account: str = Non
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get History", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_history(chat_id: Union[int, str], limit: int = 100, account: str = None) -> str:
@@ -5056,7 +5047,7 @@ async def get_history(chat_id: Union[int, str], limit: int = 100, account: str =
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get User Photos", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("user_id")
 async def get_user_photos(user_id: Union[int, str], limit: int = 10, account: str = None) -> str:
@@ -5077,7 +5068,7 @@ async def get_user_photos(user_id: Union[int, str], limit: int = 10, account: st
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get User Status", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("user_id")
 async def get_user_status(user_id: Union[int, str], account: str = None) -> str:
@@ -5095,7 +5086,7 @@ async def get_user_status(user_id: Union[int, str], account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Recent Actions", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_recent_actions(chat_id: Union[int, str], account: str = None) -> str:
@@ -5130,7 +5121,7 @@ async def get_recent_actions(chat_id: Union[int, str], account: str = None) -> s
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Pinned Messages", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_pinned_messages(chat_id: Union[int, str], account: str = None) -> str:
@@ -5174,7 +5165,7 @@ async def get_pinned_messages(chat_id: Union[int, str], account: str = None) -> 
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Create Poll", openWorldHint=True, destructiveHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def create_poll(
     chat_id: int,
@@ -5255,7 +5246,7 @@ async def create_poll(
 #         title="Send Reaction", openWorldHint=True, destructiveHint=False, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def send_reaction(
@@ -5302,7 +5293,7 @@ async def send_reaction(
 #         title="Remove Reaction", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def remove_reaction(
@@ -5338,7 +5329,7 @@ async def remove_reaction(
 #         title="Get Message Reactions", openWorldHint=True, readOnlyHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_message_reactions(
@@ -5418,7 +5409,7 @@ async def get_message_reactions(
 #         title="Save Draft", openWorldHint=True, destructiveHint=False, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def save_draft(
@@ -5465,7 +5456,7 @@ async def save_draft(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get Drafts", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_drafts(account: str = None) -> str:
     """
@@ -5530,7 +5521,7 @@ async def get_drafts(account: str = None) -> str:
 #         title="Clear Draft", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def clear_draft(chat_id: Union[int, str], account: str = None) -> str:
@@ -5564,7 +5555,7 @@ async def clear_draft(chat_id: Union[int, str], account: str = None) -> str:
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="List Folders", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def list_folders(account: str = None) -> str:
     """
@@ -5632,7 +5623,7 @@ async def list_folders(account: str = None) -> str:
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Get Folder", openWorldHint=True, readOnlyHint=True))
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 async def get_folder(folder_id: int, account: str = None) -> str:
     """
@@ -5742,7 +5733,7 @@ async def get_folder(folder_id: int, account: str = None) -> str:
 #         title="Create Folder", openWorldHint=True, destructiveHint=True, idempotentHint=False
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def create_folder(
     title: str,
@@ -5846,7 +5837,7 @@ async def create_folder(
 #         title="Add Chat to Folder", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def add_chat_to_folder(
@@ -5954,7 +5945,7 @@ async def add_chat_to_folder(
 #         idempotentHint=True,
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 @validate_id("chat_id")
 async def remove_chat_from_folder(
@@ -6064,7 +6055,7 @@ async def remove_chat_from_folder(
 #         title="Delete Folder", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def delete_folder(folder_id: int, account: str = None) -> str:
     """
@@ -6112,7 +6103,7 @@ async def delete_folder(folder_id: int, account: str = None) -> str:
 #         title="Reorder Folders", openWorldHint=True, destructiveHint=True, idempotentHint=True
 #     )
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=False)
 async def reorder_folders(folder_ids: List[int], account: str = None) -> str:
     """
@@ -6161,7 +6152,7 @@ async def reorder_folders(folder_ids: List[int], account: str = None) -> str:
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Common Chats", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("user_id")
 async def get_common_chats(
@@ -6219,7 +6210,7 @@ async def get_common_chats(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Message Read By", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_message_read_by(
@@ -6311,7 +6302,7 @@ async def get_message_read_by(
 # @mcp.tool(
 #     annotations=ToolAnnotations(title="Get Message Link", openWorldHint=True, readOnlyHint=True)
 # )
-@mcp.tool()    # PORT: stripped annotations=
+@mcp.tool()
 @with_account(readonly=True)
 @validate_id("chat_id")
 async def get_message_link(
@@ -6371,7 +6362,6 @@ async def get_message_link(
 
 
 # ======================================================================
-# PORT NOTE -- entry point rewrite
 # ----------------------------------------------------------------------
 # Original used an async _main() that:
 #   1. eagerly called `cl.start()` on every Telegram client (anyio

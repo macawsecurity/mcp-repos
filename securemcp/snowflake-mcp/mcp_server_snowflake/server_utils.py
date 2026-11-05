@@ -1,15 +1,3 @@
-# PORT: SecureMCP has no middleware system. The original CheckQueryType
-# middleware (commented below) ran before every tool call, looked at the
-# tool name + the `statement` argument, and rejected disallowed SQL types.
-#
-# Replacement: install_query_check() runs ONCE after tool registration.
-# It walks SecureMCP's internal _tools dict and wraps the handlers of the
-# tools the middleware would have intercepted. The check now runs inside
-# each affected tool's handler instead of at a framework hook.
-#
-# Same dispatch rules as the original middleware:
-#   - run_snowflake_query: read kwargs["statement"], validate via validate_sql_type
-#   - create_*, drop_*:    validate via validate_object_tool by tool name only
 
 import functools
 

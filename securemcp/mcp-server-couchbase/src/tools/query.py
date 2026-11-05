@@ -9,7 +9,6 @@ import re
 from typing import Any
 
 from lark_sqlpp import modifies_data, modifies_structure, parse_sqlpp
-# PORT: from mcp.server.fastmcp import Context
 from macaw_adapters.mcp import Context
 
 from utils.connection import connect_to_bucket
@@ -65,13 +64,10 @@ def run_sql_plus_plus_query(
         query = "SELECT * FROM users WHERE age > 18"
         # Incorrect: "SELECT * FROM bucket.scope.users WHERE age > 18"
     """
-    # PORT: was get_cluster_connection(ctx); cluster lives in module global now.
     cluster = get_cluster_connection()
 
     bucket = connect_to_bucket(cluster, bucket_name)
 
-    # PORT: was ctx.request_context.lifespan_context (FastMCP-only).
-    # AppContext now lives in module global; read via get_app_context().
     app_context = get_app_context()
     read_only_mode = app_context.read_only_mode
     read_only_query_mode = app_context.read_only_query_mode
@@ -158,8 +154,6 @@ def explain_sql_plus_plus_query(
 def run_cluster_query(ctx: Context, query: str, **kwargs: Any) -> list[dict[str, Any]]:
     """Run a query on the cluster object and return the results as a list of JSON objects."""
 
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     results = []
 

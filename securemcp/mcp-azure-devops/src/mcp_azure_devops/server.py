@@ -5,13 +5,11 @@ A simple MCP server that exposes Azure DevOps capabilities.
 """
 import argparse
 
-# from mcp.server.fastmcp import FastMCP    # PORT
 from macaw_adapters.mcp import SecureMCP
 
 from mcp_azure_devops.features import register_all
 from mcp_azure_devops.utils import register_all_prompts
 
-# PORT: was `mcp = FastMCP("Azure DevOps")`
 mcp = SecureMCP("azure-devops")
 
 # Register all features

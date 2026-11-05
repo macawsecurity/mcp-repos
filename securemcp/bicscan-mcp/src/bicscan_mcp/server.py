@@ -1,4 +1,3 @@
-# import asyncio                                # PORT: not needed; SecureMCP owns asyncio.run()
 import logging
 import os
 from typing import Any
@@ -6,7 +5,6 @@ from urllib.parse import urljoin
 
 import httpx
 from dotenv import load_dotenv
-# from mcp.server import FastMCP                 # PORT
 from macaw_adapters.mcp import SecureMCP
 
 load_dotenv()
@@ -30,9 +28,6 @@ logger.addHandler(console_handler)
 # Add more detailed logging
 logger.info("SecureMCP server initialized with name: BICScan")
 
-# PORT: was `mcp = FastMCP("BICScan")`. SecureMCP is the MACAW-instrumented
-# replacement; the rest of the file (the two @mcp.tool functions) is
-# unchanged.
 mcp = SecureMCP("BICScan")
 
 # Constants
@@ -110,16 +105,6 @@ async def get_assets(address: str) -> dict:
     return await post_request(endpoint, data=data)
 
 
-# PORT: original async main called `await mcp.run_stdio_async()` which
-# served the FastMCP stdio JSON-RPC protocol. Under SecureMCP, traffic
-# is carried by the MACAW mesh, not stdio, and `mcp.run()` is sync
-# (mcp.py:628-635 -- def run, internal asyncio.run(_run_async)).
-# Original kept as a comment for reference.
-#
-# async def main() -> None:
-#     """Run the MCP BICScan server."""
-#     # Import here to avoid issues with event loops
-#     await mcp.run_stdio_async()
 
 
 def main() -> None:
@@ -128,5 +113,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # PORT: was `asyncio.run(main())`. main() is sync now.
     main()

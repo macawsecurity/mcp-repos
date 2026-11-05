@@ -5,10 +5,6 @@ import sys
 import threading
 import typing
 
-# PORT: replaced these FastMCP imports with SecureMCP + base64.
-# from mcp.server.fastmcp import FastMCP, Image
-# from mcp.shared.exceptions import McpError
-# from mcp.types import ErrorData, INTERNAL_ERROR
 import base64
 from macaw_adapters.mcp import SecureMCP
 import optuna
@@ -22,7 +18,6 @@ SamplerName = typing.Literal["TPESampler", "NSGAIISampler", "RandomSampler", "GP
 DirectionName = typing.Literal["minimize", "maximize"]
 
 
-# PORT: was `class OptunaMCP(FastMCP)`. Same subclass with SecureMCP as the base; the body is upstream's.
 class OptunaMCP(SecureMCP):
     def __init__(
         self, name: str, storage: str | None = None, *args: typing.Any, **kwargs: typing.Any

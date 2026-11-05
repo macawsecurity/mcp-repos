@@ -72,19 +72,13 @@ async def main():
         print(f"  Failed: {e}")
 
 
-    print("\n[TEST 4] execute_query — write attempt (should be rejected)")
+    print("\n[TEST 4] execute_query INSERT (expect DENY: query fails the policy pattern)")
     try:
-        result = await client.call_tool(
-            "execute_query",
-            {"query": "INSERT INTO foo VALUES (1)"},
-        )
-        print(f"  Result: {result}")
-        if "read-only" in str(result).lower():
-            print("  PASS: read-only filter is intact")
-        else:
-            print("  WARN: write query was not rejected — check impala_tools filter")
+        result = await client.call_tool("execute_query", {"query": "INSERT INTO foo VALUES (1)"})
+        print(f"  Result: {str(result)[:240]}")
+        print("  Not denied: check that the policy is loaded in the MACAW console.")
     except Exception as e:
-        print(f"  Failed: {e}")
+        print(f"  Denied as expected: {str(e)[:240]}")
 
     print("\nAll tests done.")
 

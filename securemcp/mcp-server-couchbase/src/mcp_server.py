@@ -1,22 +1,5 @@
 """
 Couchbase MCP Server (SecureMCP port).
-
-PORT NOTE -- FastMCP -> SecureMCP
-
-Original design used FastMCP with @asynccontextmanager app_lifespan
-that yielded an AppContext into ctx.request_context.lifespan_context.
-SecureMCP has no lifespan primitive, so:
-
-  * app_lifespan was deleted; its body had no `await`. Read-only-mode
-    flags were captured in initialize_app_context() at startup, called
-    from main() before mcp.run().
-  * The AppContext / cluster live in module globals in utils.context.
-  * mcp.add_tool(fn, annotations=...) became mcp.tool(name=...,
-    description=...)(fn). SecureMCP exposes only a decorator factory
-    and accepts only (name, description, prompts).
-  * --host, --port, --transport CLI flags are kept on the surface
-    for back-compat but are cosmetic under SecureMCP. MACAW provides
-    the mesh transport regardless.
 """
 
 import logging
@@ -106,9 +89,6 @@ def prepare_tools_for_registration(
     return final_tools, configured_confirmation_tool_names, disabled_tool_names
 
 
-# PORT: app_lifespan() was here. Deleted. Its body had no `await`; it
-# only built an AppContext and yielded it. Under SecureMCP we move
-# that initialization to main() via initialize_app_context().
 
 
 @click.command()
@@ -241,23 +221,13 @@ def main(
         "confirmation_required_tools": configured_confirmation_tool_names,
     }
 
-    # PORT: stash settings in a module global so tools running in
-    # MACAW worker threads can read them without reaching for
-    # click.get_current_context() (which only works in the click
-    # command's own call frame).
     set_settings(ctx.obj)
 
-    # PORT: initialize the AppContext module global once, here in main().
-    # Replaces the lifespan-yielded AppContext that tools used to read
-    # via ctx.request_context.lifespan_context.
     initialize_app_context(
         read_only_mode=read_only_mode,
         read_only_query_mode=read_only_query_mode,
     )
 
-    # PORT: was FastMCP(MCP_SERVER_NAME, lifespan=app_lifespan, **config).
-    # SecureMCP doesn't accept lifespan=, host=, port= -- those were
-    # FastMCP-only. Just the name.
     mcp = SecureMCP(MCP_SERVER_NAME)
 
     logger.info(
@@ -265,16 +235,11 @@ def main(
         f"(read_only_mode={read_only_mode}, read_only_query_mode={read_only_query_mode})"
     )
 
-    # PORT: was mcp.add_tool(tool, annotations=annotations).
-    # SecureMCP exposes only the decorator factory; use the
-    # decorator-as-function form. annotations= is dropped because
-    # SecureMCP only accepts (name, description, prompts).
     for tool in final_tools:
         mcp.tool(name=tool.__name__, description=tool.__doc__ or "")(tool)
 
     logger.info(f"Registered {len(final_tools)} tool(s)")
 
-    # PORT: transport= argument is cosmetic; SecureMCP ignores it.
     mcp.run()
 
 

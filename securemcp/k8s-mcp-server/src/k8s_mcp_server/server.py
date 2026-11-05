@@ -9,8 +9,6 @@ import asyncio
 import logging
 import sys
 
-# from mcp.server.fastmcp import Context, FastMCP    # PORT
-# from mcp.types import Icon, ToolAnnotations         # PORT: Icon used only for _ICONS dict (now dead); ToolAnnotations dropped from decorators
 from macaw_adapters.mcp import SecureMCP, Context
 from pydantic import Field, ValidationError
 from pydantic.fields import FieldInfo
@@ -32,7 +30,6 @@ from k8s_mcp_server.tools import CommandHelpResult, CommandResult
 logger = logging.getLogger(__name__)
 
 # ======================================================================
-# PORT NOTE -- _ICONS dropped (no equivalent under SecureMCP)
 # ----------------------------------------------------------------------
 # Original: each @mcp.tool received `icons=_ICONS["kubectl"]` etc., a
 # list of `mcp.types.Icon(src=URL, mimeType=...)` advertising tool
@@ -53,9 +50,6 @@ logger = logging.getLogger(__name__)
 #   4. Therefore base64-encoding the SVG bytes (or keeping URLs) has
 #      the same outcome: there is no destination on the SecureMCP
 #      side to put it. The information vanishes either way.
-#
-# Documented in MIGRATION.txt under BROKEN ON PURPOSE: tool
-# advertisement icons.
 # ======================================================================
 # _CNCF = "https://raw.githubusercontent.com/cncf/artwork/main/projects"
 # _ICONS: dict[str, list[Icon]] = {
@@ -96,21 +90,7 @@ def run_startup_checks() -> dict[str, bool]:
 # Call the startup checks
 cli_status = run_startup_checks()
 
-# PORT: Create the SecureMCP server. Original constructor (kept commented):
-#   mcp = FastMCP(name="K8s MCP Server", instructions=INSTRUCTIONS)
-#   mcp._mcp_server.version = __version__
-# Notes:
-#   - `instructions=` not accepted by SecureMCP (see skill Step 1b);
-#     dropped. The INSTRUCTIONS string is referenced nowhere else, so
-#     no behavioural impact at the boundary.
-#   - mcp._mcp_server.version is the FastMCP-protocol-layer mechanism
-#     for advertising server version in the MCP serverInfo response.
-#     SecureMCP has no _mcp_server attribute (skill Hard Rule #3,
-#     verified by grep). MACAW exposes identity via agent_id; the
-#     version is still in __version__ for any consumer who imports
-#     the package directly.
 mcp = SecureMCP(name="k8s-mcp-server")
-# mcp._mcp_server.version = __version__    # PORT: removed -- see note above
 
 # Register prompt templates
 register_prompts(mcp)
@@ -232,11 +212,10 @@ async def _describe_tool_command(tool: str, command: str | None, ctx: Context | 
 
 # Tool-specific command documentation functions
 # @mcp.tool(annotations=ToolAnnotations(title="kubectl Help", readOnlyHint=True), icons=_ICONS["kubectl"])
-# PORT: stripped annotations=, icons=
 @mcp.tool()
 async def describe_kubectl(
     # command: str | None = Field(description="Specific kubectl command to get help for", default=None),
-    command: str | None = None,    # PORT: was Field(...) -- description in docstring Args:
+    command: str | None = None,
     ctx: Context | None = None,
 ) -> CommandHelpResult:
     """Get documentation and help text for kubectl commands.
@@ -255,11 +234,10 @@ async def describe_kubectl(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Helm Help", readOnlyHint=True), icons=_ICONS["helm"])
-# PORT: stripped annotations=, icons=
 @mcp.tool()
 async def describe_helm(
     # command: str | None = Field(description="Specific Helm command to get help for", default=None),
-    command: str | None = None,    # PORT: was Field(...) -- description in docstring Args:
+    command: str | None = None,
     ctx: Context | None = None,
 ) -> CommandHelpResult:
     """Get documentation and help text for Helm commands.
@@ -278,11 +256,10 @@ async def describe_helm(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="Istio Help", readOnlyHint=True), icons=_ICONS["istioctl"])
-# PORT: stripped annotations=, icons=
 @mcp.tool()
 async def describe_istioctl(
     # command: str | None = Field(description="Specific Istio command to get help for", default=None),
-    command: str | None = None,    # PORT: was Field(...) -- description in docstring Args:
+    command: str | None = None,
     ctx: Context | None = None,
 ) -> CommandHelpResult:
     """Get documentation and help text for Istio commands.
@@ -301,11 +278,10 @@ async def describe_istioctl(
 
 
 # @mcp.tool(annotations=ToolAnnotations(title="ArgoCD Help", readOnlyHint=True), icons=_ICONS["argocd"])
-# PORT: stripped annotations=, icons=
 @mcp.tool()
 async def describe_argocd(
     # command: str | None = Field(description="Specific ArgoCD command to get help for", default=None),
-    command: str | None = None,    # PORT: was Field(...) -- description in docstring Args:
+    command: str | None = None,
     ctx: Context | None = None,
 ) -> CommandHelpResult:
     """Get documentation and help text for ArgoCD commands.
@@ -329,15 +305,14 @@ async def describe_argocd(
 #     annotations=ToolAnnotations(title="Execute kubectl", destructiveHint=True, openWorldHint=True),
 #     icons=_ICONS["kubectl"],
 # )
-# PORT: stripped annotations=, icons=
 @mcp.tool(
     description="Execute kubectl commands with support for Unix pipes.",
 )
 async def execute_kubectl(
     # command: str = Field(description="Complete kubectl command to execute (including any pipes and flags)"),
-    command: str,    # PORT: was Field(...) -- description in docstring Args:
+    command: str,
     # timeout: int | None = Field(description="Maximum execution time in seconds (default: 300)", default=None),
-    timeout: int | None = None,    # PORT: was Field(...) -- description in docstring Args:
+    timeout: int | None = None,
     ctx: Context | None = None,
 ) -> CommandResult:
     """Execute kubectl commands with support for Unix pipes.
@@ -372,15 +347,14 @@ async def execute_kubectl(
 #     annotations=ToolAnnotations(title="Execute Helm", destructiveHint=True, openWorldHint=True),
 #     icons=_ICONS["helm"],
 # )
-# PORT: stripped annotations=, icons=
 @mcp.tool(
     description="Execute Helm commands with support for Unix pipes.",
 )
 async def execute_helm(
     # command: str = Field(description="Complete Helm command to execute (including any pipes and flags)"),
-    command: str,    # PORT: was Field(...) -- description in docstring Args:
+    command: str,
     # timeout: int | None = Field(description="Maximum execution time in seconds (default: 300)", default=None),
-    timeout: int | None = None,    # PORT: was Field(...) -- description in docstring Args:
+    timeout: int | None = None,
     ctx: Context | None = None,
 ) -> CommandResult:
     """Execute Helm commands with support for Unix pipes.
@@ -414,15 +388,14 @@ async def execute_helm(
 #     annotations=ToolAnnotations(title="Execute Istio", destructiveHint=True, openWorldHint=True),
 #     icons=_ICONS["istioctl"],
 # )
-# PORT: stripped annotations=, icons=
 @mcp.tool(
     description="Execute Istio commands with support for Unix pipes.",
 )
 async def execute_istioctl(
     # command: str = Field(description="Complete Istio command to execute (including any pipes and flags)"),
-    command: str,    # PORT: was Field(...) -- description in docstring Args:
+    command: str,
     # timeout: int | None = Field(description="Maximum execution time in seconds (default: 300)", default=None),
-    timeout: int | None = None,    # PORT: was Field(...) -- description in docstring Args:
+    timeout: int | None = None,
     ctx: Context | None = None,
 ) -> CommandResult:
     """Execute Istio commands with support for Unix pipes.
@@ -456,15 +429,14 @@ async def execute_istioctl(
 #     annotations=ToolAnnotations(title="Execute ArgoCD", destructiveHint=True, openWorldHint=True),
 #     icons=_ICONS["argocd"],
 # )
-# PORT: stripped annotations=, icons=
 @mcp.tool(
     description="Execute ArgoCD commands with support for Unix pipes.",
 )
 async def execute_argocd(
     # command: str = Field(description="Complete ArgoCD command to execute (including any pipes and flags)"),
-    command: str,    # PORT: was Field(...) -- description in docstring Args:
+    command: str,
     # timeout: int | None = Field(description="Maximum execution time in seconds (default: 300)", default=None),
-    timeout: int | None = None,    # PORT: was Field(...) -- description in docstring Args:
+    timeout: int | None = None,
     ctx: Context | None = None,
 ) -> CommandResult:
     """Execute ArgoCD commands with support for Unix pipes.

@@ -1,9 +1,5 @@
 import asyncio
 import os
-# PORT: FastMCP -> SecureMCP. Same decorator surface for our usage
-# (.tool / .resource / .prompt with name+description), so tools/* are
-# unchanged in behavior; only the import + type hints flip.
-# from fastmcp import FastMCP
 from macaw_adapters.mcp import SecureMCP
 from typing import List, Dict, Any
 from tools.search_tools import register_search_tools
@@ -287,19 +283,5 @@ def health_check() -> str:
 
 
 if __name__ == "__main__":
-    # PORT: SecureMCP runs on the MACAW mesh (no HTTP server). Tools
-    # become invokable via MACAWClient.invoke_tool(...) once the agent
-    # registers. This server is now mesh-routed only -- the original
-    # streamable-http transport is no longer active.
-    #
-    # ORIGINAL (FastMCP HTTP transport on $PORT):
-    # logger.info(f"MCP server started on port {os.getenv('PORT', 8080)}")
-    # asyncio.run(
-    #     mcp.run_async(
-    #         transport="streamable-http",
-    #         host="0.0.0.0",
-    #         port=os.getenv("PORT", 8080),
-    #     )
-    # )
     logger.info("MCP server starting on MACAW mesh (no HTTP transport)")
     mcp.run()

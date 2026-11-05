@@ -9,23 +9,10 @@ from typing import Dict, List, Any, Optional, Union
 
 import splunklib.client
 from decouple import config
-# PORT: was `from mcp.server.fastmcp import FastMCP`. SecureMCP replaces FastMCP.
 from macaw_adapters.mcp import SecureMCP
 from splunklib import results
 import sys
 import socket
-# PORT: HTTP/SSE transport machinery dropped. Under SecureMCP traffic
-# arrives via the MACAW mesh, so the FastAPI wrapper, the
-# SseServerTransport, uvicorn, and the OpenAPI doc UI all go away.
-# Originals preserved as commented imports so the next reader sees
-# exactly what was there.
-# from fastapi import FastAPI, APIRouter, Request                           # PORT: HTTP transport dropped
-# from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html      # PORT: /docs UI dropped
-# from fastapi.staticfiles import StaticFiles                               # PORT
-# from fastapi.responses import JSONResponse                                # PORT
-# from mcp.server.sse import SseServerTransport                             # PORT: SSE transport dropped
-# from starlette.routing import Mount                                       # PORT
-# import uvicorn                                                            # PORT: not needed; SecureMCP owns its asyncio.run()
 
 # Configure logging
 logging.basicConfig(
@@ -39,35 +26,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Environment variables
-# PORT: FASTMCP_PORT was the HTTP listen port. Under SecureMCP the
-# mesh carries traffic; no HTTP server runs here, so the var is no
-# longer used. Originals preserved as comments for restoration.
-# FASTMCP_PORT = int(os.environ.get("FASTMCP_PORT", "8000"))
-# os.environ["FASTMCP_PORT"] = str(FASTMCP_PORT)
 
-# PORT: was a FastAPI() instance + FastMCP(...) instance. Both gone.
-# - FastAPI wrapper served /sse, /messages, /docs, /redoc, /openapi.json
-#   on top of FastMCP. Mesh removes the need for HTTP entirely.
-# - FastMCP took description=, version=, host=, port= kwargs. SecureMCP
-#   only takes name (skill Step 1b).
-# Originals preserved as comments.
-# app = FastAPI(
-#     title="Splunk MCP API",
-#     description="A FastMCP-based tool for interacting with Splunk Enterprise/Cloud through natural language",
-#     version="0.3.0",
-# )
-# mcp = FastMCP(
-#     "splunk",
-#     description="A FastMCP-based tool for interacting with Splunk Enterprise/Cloud through natural language",
-#     version="0.3.0",
-#     host="0.0.0.0",
-#     port=FASTMCP_PORT,
-# )
 mcp = SecureMCP("splunk")
 
 
 # ======================================================================
-# PORT NOTE -- HTTP/SSE transport + OpenAPI documentation surface dropped
 # ----------------------------------------------------------------------
 # The original server stacked a FastAPI app on top of FastMCP and
 # exposed these HTTP routes:
@@ -81,8 +44,7 @@ mcp = SecureMCP("splunk")
 #   - Transport: MACAW mesh replaces SSE. Callers use MACAWClient.
 #   - Discovery: MACAWClient.list_tools(server_name="splunk") returns
 #     the same {name, description, parameters} the openapi.json built.
-#     Tool advertisement happens automatically at mesh registration
-#     (mcp.py:_init_macaw_client at ~628).
+#     Tool advertisement happens automatically at mesh registration.
 #   - UI: the MACAW Console replaces /docs and /redoc.
 #
 # All original code below preserved as a commented block so the
@@ -824,13 +786,11 @@ async def get_indexes_and_sourcetypes() -> Dict[str, Any]:
         raise
 
 # ======================================================================
-# PORT NOTE -- redundant `list_tools` tool dropped
 # ----------------------------------------------------------------------
 # The original `list_tools()` tool body introspected `mcp._tools` and
 # returned the registered tool list. Under SecureMCP + MACAW, the mesh
 # advertises tools automatically at startup, and callers discover them
-# via `MACAWClient.list_tools(server_name="splunk")` (mesh-native API
-# at macaw_adapters/mcp/client.py:280). The original tool was a manual
+# via `MACAWClient.list_tools(server_name="splunk")`. The original tool was a manual
 # reinvention of what the mesh now provides for free, so it is dropped.
 # Original code preserved as a comment for reference.
 # ======================================================================
@@ -947,7 +907,6 @@ async def ping() -> Dict[str, Any]:
         }
 
 # ======================================================================
-# PORT NOTE -- entry point rewrite
 # ----------------------------------------------------------------------
 # The original `__main__` branched on `argv[1]` (stdio | sse). The sse
 # branch ran `uvicorn.run(app, host="0.0.0.0", port=FASTMCP_PORT)` to

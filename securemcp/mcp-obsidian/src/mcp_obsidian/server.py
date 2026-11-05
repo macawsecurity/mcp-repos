@@ -30,8 +30,6 @@ Each wrapper:
 
 The tool names are preserved exactly via @app.tool(name=...) so
 existing callers see the same advertised names.
-
-See MIGRATION.txt for the full port plan.
 """
 
 import json
@@ -41,13 +39,6 @@ from typing import Any, Dict, List, Optional
 
 import os
 from dotenv import load_dotenv
-# from mcp.server import Server                                              # PORT
-# from mcp.types import (                                                    # PORT: TextContent etc no longer used here directly
-#     Tool,
-#     TextContent,
-#     ImageContent,
-#     EmbeddedResource,
-# )
 from macaw_adapters.mcp import SecureMCP
 
 load_dotenv()
@@ -61,14 +52,10 @@ api_key = os.getenv("OBSIDIAN_API_KEY")
 if not api_key:
     raise ValueError(f"OBSIDIAN_API_KEY environment variable required. Working directory: {os.getcwd()}")
 
-# PORT: was `app = Server("mcp-obsidian")`. We keep the variable name
-# `app` (the original used it too) so every decorator below stays
-# `@app.tool(...)`.
 app = SecureMCP("mcp-obsidian")
 
 
 # ======================================================================
-# PORT NOTE -- the ToolHandler registry pattern is gone
 # ----------------------------------------------------------------------
 # Original had a `tool_handlers` dict, an `add_tool_handler()` helper,
 # and a `get_tool_handler()` lookup. SecureMCP routes tool calls by
@@ -125,15 +112,6 @@ def _extract_text(result: Sequence[Any]) -> str:
 
 
 # ======================================================================
-# PORT NOTE -- the @app.list_tools / @app.call_tool dispatcher is
-# replaced by 13 @app.tool() wrappers below. Each wrapper:
-#   - has typed Python kwargs matching the original inputSchema
-#   - builds the dict the handler's run_tool() expects
-#   - calls handler.run_tool(args)
-#   - returns the text content as a plain string
-# Tool names are preserved via @app.tool(name=...) so existing callers
-# see the same advertised names (obsidian_*).
-# Original code preserved as comments below.
 # ======================================================================
 # @app.list_tools()
 # async def list_tools() -> list[Tool]:
@@ -395,7 +373,6 @@ def obsidian_get_recent_changes(limit: int = 10, days: int = 90) -> str:
 
 
 # ======================================================================
-# PORT NOTE -- entry point
 # ----------------------------------------------------------------------
 # Original was async main() with `async with stdio_server()` +
 # app.run(read_stream, write_stream, app.create_initialization_options()).

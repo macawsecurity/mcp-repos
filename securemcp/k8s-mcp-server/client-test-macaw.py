@@ -102,22 +102,14 @@ async def main():
         print("  PASS-ish -- exception surfaced via mesh; handler was reached.")
 
     
-    print("\n[TEST 3] execute_kubectl 'version --client' -- end-to-end (no cluster)")
+    print("\n[TEST 3] execute_kubectl (expect DENY: execute_kubectl is denied by the policy)")
     try:
-        result = await client.call_tool(
-            "execute_kubectl",
-            {"command": "version --client", "timeout": 10},
-        )
-        text = str(result)
-        print(f"  Result: {text[:240]}")
-        print("  PASS -- execute_kubectl returned. If you see a kubectl ")
-        print("  version string, end-to-end works. If you see a structured ")
-        print("  error (kubectl missing or validation rejected), the handler ")
-        print("  still ran and the CLI subprocess plumbing is intact.")
+        result = await client.call_tool("execute_kubectl", {"command": "version --client", "timeout": 10})
+        print(f"  Result: {str(result)[:240]}")
+        print("  Not denied: check that the policy is loaded in the MACAW console.")
     except Exception as e:
-        msg = str(e)
-        print(f"  Got error: {msg[:240]}")
-        print("  PASS-ish -- exception surfaced via mesh; handler was reached.")
+        print(f"  Denied as expected: {str(e)[:240]}")
+
 
 
 

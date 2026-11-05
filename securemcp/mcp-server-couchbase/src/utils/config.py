@@ -1,22 +1,12 @@
 import logging
 from pathlib import Path
 
-# PORT: `import click` was here, used by the old get_settings()
-# implementation to reach click.get_current_context(). Removed --
-# tool calls under SecureMCP run in worker threads where click has
-# no current context, so the click-based read raised
-# `RuntimeError: There is no active click context.`
-# import click
 
 from .constants import MCP_SERVER_NAME
 
 logger = logging.getLogger(f"{MCP_SERVER_NAME}.utils.config")
 
 
-# PORT: settings are now stashed in a module global at startup by
-# main() via set_settings(), and read by tools in any thread via
-# get_settings(). Replaces the FastMCP-era pattern of reading
-# click.get_current_context().obj at tool-call time.
 _SETTINGS: dict = {}
 
 
@@ -33,15 +23,7 @@ def set_settings(settings: dict) -> None:
 
 
 def get_settings() -> dict:
-    """Return the process-wide settings dict.
-
-    PORT NOTE: this used to be
-        ctx = click.get_current_context()
-        return ctx.obj or {}
-    which raised "There is no active click context" when called
-    from a worker thread. Now reads the module global populated
-    by set_settings() at startup. Same return shape, no click.
-    """
+    """Return the process-wide settings dict."""
     return _SETTINGS
 
 

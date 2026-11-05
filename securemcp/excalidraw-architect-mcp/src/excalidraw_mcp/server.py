@@ -9,8 +9,6 @@ Four tools:
 
 from typing import Any
 
-# Port (FastMCP -> SecureMCP) Step 1a: import swap.
-# was: from fastmcp import FastMCP
 from macaw_adapters.mcp import SecureMCP
 
 from excalidraw_mcp.core.components import detect_component
@@ -33,29 +31,6 @@ from excalidraw_mcp.engine.renderer import build_excalidraw_file, save_excalidra
 from excalidraw_mcp.parsers.mermaid import parse_mermaid
 from excalidraw_mcp.parsers.state import apply_modifications, get_diagram_summary
 
-# Port (FastMCP -> SecureMCP) Step 1b: constructor swap.
-# was:
-#   mcp = FastMCP(
-#       "Excalidraw Architect",
-#       instructions=(
-#           "Generate beautiful Excalidraw architecture diagrams with perfect "
-#           "auto-layout, stateful editing, and architecture-aware component "
-#           "styling. No API keys required."
-#       ),
-#   )
-# `instructions=` is FastMCP-only; SecureMCP.__init__ accepts
-# (name, version, intent_policy, roots, **kwargs) -- dropping it explicitly
-# rather than letting it fall through to extra_config silently.
-#
-# Name change: upstream passed "Excalidraw Architect" (with a space).
-# Under FastMCP/stdio that name was display-only. Under SecureMCP the
-# name becomes part of the agent_id routing key
-# (local:<user>/app:securemcp-<name>:<hash>). A space inside the routing
-# key was empirically observed to break call_tool RPC while leaving
-# list_tools registry lookup working (server log stayed silent for
-# 180s on a tool call). Renamed to kebab-case to match every other
-# working port in this workspace (splunk, jupyter-mcp-proxy, etc.).
-# was: mcp = SecureMCP("Excalidraw Architect")
 mcp = SecureMCP("excalidraw-architect")
 
 
@@ -64,9 +39,6 @@ mcp = SecureMCP("excalidraw-architect")
 # ---------------------------------------------------------------------------
 
 
-# Port Step 1c: @mcp.tool (fastmcp 2.x bare-decorator sugar) ->
-# @mcp.tool() (SecureMCP requires the call form: mcp.py:486 returns the
-# decorator only when invoked). Applied to all 4 tools below.
 @mcp.tool()
 def create_diagram(
     nodes: list,  # was: nodes: list[dict[str, Any]]

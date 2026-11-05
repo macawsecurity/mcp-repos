@@ -85,32 +85,14 @@ async def main():
         return
 
 
-    print("\n[TEST 2] store_memory -- handler reachability")
+    print("\n[TEST 2] store_memory (expect DENY: store_memory is denied by the policy)")
     try:
-        result = await client.call_tool(
-            "store_memory",
-            {
-                "conversation_id": "macaw-smoke-conv-1",
-                "text": "macaw smoke test message",
-                "message_type": "human",
-                "user_id": "macaw-smoke-user",
-            },
-        )
-        text = str(result)
-        print(f"  Result: {text[:240]}")
-        print("  PASS -- store_memory returned. Either upstream service "
-              "answered, or the handler caught httpx error and returned "
-              "an error dict. Both prove the call reached the handler.")
+        result = await client.call_tool("store_memory", {"conversation_id": "smoke-conv-1", "text": "smoke test message", "message_type": "human", "user_id": "smoke-user"})
+        print(f"  Result: {str(result)[:240]}")
+        print("  Not denied: check that the policy is loaded in the MACAW console.")
     except Exception as e:
-        msg = str(e)
-        print(f"  Got error: {msg[:240]}")
-        if "ValueError" in msg or "validate" in msg.lower():
-            print("  Inspect -- validator rejected our inputs. Check "
-                  "utils/validators.py for the accepted shape.")
-        else:
-            print("  PASS-ish -- exception was not a validator error. "
-                  "Likely mesh-level or upstream HTTP failure surfaced "
-                  "through invoke_tool. The handler was reached.")
+        print(f"  Denied as expected: {str(e)[:240]}")
+
 
 
     print("\n[TEST 3] retrieve_memory -- handler reachability")

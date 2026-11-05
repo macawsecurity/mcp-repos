@@ -22,7 +22,7 @@ def get_server(client,name):
 async def main():
    
     if len(sys.argv) < 3:
-        print("Usage: python3.11 client.py <server_filter_name> <client_name>")
+        print("Usage: python3 client-test-macaw.py <server_filter_name> <client_name>")
         sys.exit(1)
 
     name = sys.argv[1]

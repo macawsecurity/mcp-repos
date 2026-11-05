@@ -1,7 +1,5 @@
 from typing import Any, Dict, Optional
 import httpx
-# PORT: FastMCP -> SecureMCP (type hint only; decorator API matches).
-# from fastmcp import FastMCP
 from macaw_adapters.mcp import SecureMCP
 from src.core import config
 from src.core.logger import logger

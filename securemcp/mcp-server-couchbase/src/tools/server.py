@@ -8,16 +8,12 @@ import json
 import logging
 from typing import Any
 
-# PORT: from mcp.server.fastmcp import Context
 from macaw_adapters.mcp import Context
 
 from tools.query import run_cluster_query
 from utils.config import get_settings
 from utils.connection import connect_to_bucket
 from utils.constants import MCP_SERVER_NAME
-# PORT: import the module (not a name from it) so the connection-status
-# check below sees the live value of _CLUSTER. `from utils.context
-# import _CLUSTER` would freeze a stale reference at import time.
 from utils import context as _context
 from utils.context import get_cluster_connection
 
@@ -46,9 +42,6 @@ def get_server_configuration_status(ctx: Context) -> dict[str, Any]:
         "client_key_path_configured": bool(settings.get("client_key_path")),
     }
 
-    # PORT: was ctx.request_context.lifespan_context.cluster (FastMCP-only).
-    # The cluster lives in utils.context._CLUSTER module global. We
-    # read it via the module to get the live value, not a frozen one.
     connection_status = {
         "cluster_connected": _context._CLUSTER is not None,
     }
@@ -70,8 +63,6 @@ def test_cluster_connection(
     Returns connection status and basic cluster information.
     """
     try:
-        # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-        # cluster = get_cluster_connection(ctx)
         cluster = get_cluster_connection()
         bucket = None
         if bucket_name:
@@ -101,8 +92,6 @@ def get_scopes_and_collections_in_bucket(
     """Get the names of all scopes and collections in the bucket.
     Returns a dictionary with scope names as keys and lists of collection names as values.
     """
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     bucket = connect_to_bucket(cluster, bucket_name)
     try:
@@ -120,8 +109,6 @@ def get_scopes_and_collections_in_bucket(
 
 def get_buckets_in_cluster(ctx: Context) -> list[str]:
     """Get the names of all the accessible buckets in the cluster."""
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     bucket_manager = cluster.buckets()
     buckets_with_settings = bucket_manager.get_all_buckets()
@@ -135,8 +122,6 @@ def get_buckets_in_cluster(ctx: Context) -> list[str]:
 
 def get_scopes_in_bucket(ctx: Context, bucket_name: str) -> list[str]:
     """Get the names of all scopes in the given bucket."""
-    # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-    # cluster = get_cluster_connection(ctx)
     cluster = get_cluster_connection()
     bucket = connect_to_bucket(cluster, bucket_name)
     try:
@@ -177,8 +162,6 @@ def get_cluster_health_and_services(
     - Cluster health status with service-level connection details and latency measurements
     """
     try:
-        # PORT: was `cluster = get_cluster_connection(ctx)` -- cluster now in module global, no ctx needed.
-        # cluster = get_cluster_connection(ctx)
         cluster = get_cluster_connection()
 
         if bucket_name:

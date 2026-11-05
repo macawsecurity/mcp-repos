@@ -1,19 +1,4 @@
-"""
-spotify-mcp server (SecureMCP port).
-
-PORT NOTE -- FastMCP/low-level Server -> SecureMCP
-==================================================
-The original used the low-level mcp.server.Server with a static
-@server.list_tools() returning Pydantic-derived Tool objects, plus a
-@server.call_tool() generic dispatcher that branched on tool name.
-That is the "old format" PORT-shape per the skill (Step 0 row 3):
-the tool list is static, defined entirely in source, and each tool
-has a discrete code path. Collapse to modern @mcp.tool() decorators.
-
-Per the skill, original code is preserved as comment blocks below;
-do not delete it. Reviewers should be able to see exactly what was
-removed and why.
-"""
+"""spotify-mcp server, running on SecureMCP."""
 
 # import asyncio                                            
 import base64
@@ -26,10 +11,6 @@ from typing import List, Optional, Tuple
 from datetime import datetime
 from pathlib import Path
 
-# PORT: low-level MCP imports replaced by SecureMCP. Kept commented for review.
-# import mcp.types as types
-# from mcp.server import NotificationOptions, Server  # , stdio_server
-# import mcp.server.stdio
 from macaw_adapters.mcp import SecureMCP
 
 from pydantic import BaseModel, Field, AnyUrl
@@ -56,17 +37,10 @@ if spotify_api.REDIRECT_URI:
     spotify_api.REDIRECT_URI = normalize_redirect_uri(spotify_api.REDIRECT_URI)
 spotify_client = spotify_api.Client(logger)
 
-# PORT: was: server = Server("spotify-mcp")
 mcp = SecureMCP("spotify-mcp")
 
 
 # ======================================================================
-# PORT: ToolModel + 5 subclasses kept commented for reference. SecureMCP
-# derives schemas from each @mcp.tool function's signature; these
-# Pydantic models are no longer wired. Per-field Field(description=...)
-# hints have moved to each tool's docstring Args: section because
-# SecureMCP's _extract_parameters does not read pydantic.Field metadata
-# (mcp.py:827-859 -- 6-entry type table only).
 # ======================================================================
 # class ToolModel(BaseModel):
 #     @classmethod
@@ -132,10 +106,6 @@ mcp = SecureMCP("spotify-mcp")
 
 
 # ======================================================================
-# PORT: removed @server.list_prompts / list_resources / list_tools /
-# call_tool. Both list_prompts and list_resources returned []
-# (no prompts/resources exposed). list_tools and call_tool are
-# replaced by the 5 @mcp.tool() functions below.
 # ======================================================================
 # @server.list_prompts()
 # async def handle_list_prompts() -> list[types.Prompt]:
@@ -172,10 +142,6 @@ mcp = SecureMCP("spotify-mcp")
 
 
 # ======================================================================
-# PORT: 5 modern @mcp.tool() functions replacing the low-level
-# list_tools / call_tool dispatcher. Each preserves the original tool
-# name (Spotify-prefixed) and multi-action semantics. Function bodies
-# call the unchanged spotify_client (sync SDK -- spotipy).
 # ======================================================================
 
 
@@ -389,9 +355,6 @@ async def SpotifyPlaylist(
 
 
 # ======================================================================
-# PORT: was async main() with stdio_server. SecureMCP.run() is sync
-# (mcp.py:628-635: def run -> asyncio.run(_run_async)) and owns its
-# own event loop internally; no stdio plumbing needed here.
 # ======================================================================
 # async def main():
 #     try:

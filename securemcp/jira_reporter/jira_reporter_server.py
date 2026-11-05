@@ -1,7 +1,7 @@
 import asyncio
 import os
 import sys
-import textwrap  # PORT FIX: used at line ~287 by find_delayed_issues; was missing
+import textwrap
 from datetime import datetime, timedelta
 from typing import Annotated, List, Dict, Optional
 import httpx
@@ -26,9 +26,6 @@ mcp = SecureMCP("jira-reporter")
 
 
 @mcp.resource("jira://history")
-# PORT FIX: was `-> List[Dict]` but the function returns {"history": [...]}
-# which is a dict, not a list of dicts. Annotation corrected to match.
-# was: def get_history(ctx: Context) -> List[Dict]:
 def get_history(ctx: Context) -> Dict[str, List]:
     history = ctx.get("history") or []
     return {
@@ -75,9 +72,6 @@ async def generate_jira_report(
     summarize: Annotated[
         bool, Field(description="If true, ask the client's LLM to summarize the report.")
     ] = False,
-# PORT FIX: was `-> str` but four of four return paths now return
-# {"result": ..., "history": ...}. Annotation corrected to dict.
-# was: ) -> str:
 ) -> dict:
     """
     Generates a report of Jira issues based on a JQL query (defaulting to recently updated).
@@ -127,12 +121,6 @@ async def generate_jira_report(
         }
         history.append(event)
         ctx.set("history", history)
-        # PORT FIX: was `return "No issues..."` (a bare string). Every other
-        # return path in this tool returns {"result": ..., "history": ...}.
-        # The bare-string path made caller code that read result["history"]
-        # KeyError on empty databases. Now consistent shape across all
-        # paths.
-        # was: return "No issues found matching the criteria for the weekly report."
         return {
             "result": "No issues found matching the criteria for the weekly report.",
             "history": history,
@@ -321,10 +309,6 @@ async def find_delayed_issues(
         # 결과 취합
         for key, task in llm_tasks.items():
             try:
-                # PORT FIX: SecureMCP's ctx.sample returns `str` directly
-                # (mcp.py:184-191). Original FastMCP returned an object with
-                # a `.text` field. Adjusted to use the string result directly.
-                # was: response = task.result(); llm_explanations[key] = response.text.strip()
                 llm_explanations[key] = task.result().strip()
             except Exception as e:
                 ctx.warning(f"[{key}] LLM 요약 실패: {e}")

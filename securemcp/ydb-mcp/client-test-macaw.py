@@ -1,5 +1,5 @@
 """
-MACAW client smoke test for ydp-mcp
+MACAW client smoke test for ydb-mcp
 (post FastMCP -> SecureMCP port).
 
 Usage:
@@ -35,7 +35,7 @@ async def main():
 
     if len(sys.argv) < 3:
         print('Usage: python3 client-test-macaw.py "<server filter>" <client name>')
-        print('Example: python3 client-test-macaw.py "YDB MCP" ydb-test-client')
+        print('Example: python3 client-test-macaw.py "ydb-mcp" ydb-test-client')
         sys.exit(1)
 
     name = sys.argv[1]

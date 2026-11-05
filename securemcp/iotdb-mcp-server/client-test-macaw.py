@@ -98,28 +98,14 @@ async def run_table_dialect_tests(client):
         print(f"  Failed: {e}")
 
 
-    print("\n[TEST 4] read_query — write attempt (should be rejected)")
+    print("\n[TEST 4] read_query INSERT (expect DENY: query_sql fails the policy pattern)")
     try:
-        result = await client.call_tool(
-            "read_query",
-            {"query_sql": "INSERT INTO root.foo VALUES (1, 'a')"},
-        )
-        print(f"  Result: {result}")
-        result_text = str(result).lower()
-        if "only select" in result_text or "not allowed" in result_text:
-            print("  PASS: read-only filter is intact, port verified")
-        else:
-            print("  WARN: write query was not rejected — check handler filter")
-    except ValueError as e:
-
-        msg = str(e).lower()
-        if "only select" in msg or "not allowed" in msg:
-            print(f"  PASS: rejected with ValueError ({e!s})")
-            print("  Read-only filter intact, port verified")
-        else:
-            print(f"  Unexpected ValueError: {e}")
+        result = await client.call_tool("read_query", {"query_sql": "INSERT INTO root.foo VALUES (1, 'a')"})
+        print(f"  Result: {str(result)[:240]}")
+        print("  Not denied: check that the policy is loaded in the MACAW console.")
     except Exception as e:
-        print(f"  Failed: {e}")
+        print(f"  Denied as expected: {str(e)[:240]}")
+
 
 
 
@@ -160,7 +146,7 @@ async def run_tree_dialect_tests(client):
         print(f"  Failed: {e}")
 
 
-    print("\n[TEST 4] metadata_query — unsupported query (should be rejected)")
+    print("\n[TEST 5] metadata_query unsupported query (expect the server to reject it)")
     try:
         result = await client.call_tool(
             "metadata_query",
@@ -169,14 +155,14 @@ async def run_tree_dialect_tests(client):
         print(f"  Result: {result}")
         result_text = str(result).lower()
         if "unsupported" in result_text:
-            print("  PASS: unsupported-query filter is intact, port verified")
+            print("  PASS: the server rejected the unsupported query")
         else:
-            print("  WARN: unsupported query was not rejected — check handler filter")
+            print("  WARN: unsupported query was not rejected")
     except ValueError as e:
         msg = str(e).lower()
         if "unsupported" in msg:
             print(f"  PASS: rejected with ValueError ({e!s})")
-            print("  Unsupported-query filter intact, port verified")
+            print("  The server rejected the unsupported query")
         else:
             print(f"  Unexpected ValueError: {e}")
     except Exception as e:

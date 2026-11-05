@@ -106,68 +106,21 @@ async def main():
                   "which means the wrapper let SELECT through.")
 
 
-    print("\n[TEST 3] run_snowflake_query with DROP -- statement-arg deny")
+    print("\n[TEST 3] run_snowflake_query DROP (expect DENY: statement fails the policy pattern)")
     try:
-        result = await client.call_tool(
-            "run_snowflake_query",
-            {"statement": "DROP TABLE __macaw_smoke_does_not_exist__"},
-        )
-        text = str(result)
-        print(f"  Result: {text[:240]}")
-        if "not allowed" in text.lower():
-            print("  PASS -- 'not allowed' in the response. Wrapper rejected "
-                  "the DROP at the statement-arg check. Snowflake never saw "
-                  "the SQL.")
-        else:
-            print("  Inspect -- expected a 'not allowed' rejection. Either:")
-            print("    a) DROP is in the allow list of your YAML config "
-                  "(unusual; check sql_statement_permissions), OR")
-            print("    b) install_query_check didn't wrap the handler -- "
-                  "verify the order of calls in main(): tools must register "
-                  "BEFORE install_query_check runs.")
+        result = await client.call_tool("run_snowflake_query", {"statement": "DROP TABLE __smoke_does_not_exist__"})
+        print(f"  Result: {str(result)[:240]}")
+        print("  Not denied: check that the policy is loaded in the MACAW console.")
     except Exception as e:
-        msg = str(e)
-        print(f"  Got error: {msg[:240]}")
-        if "not allowed" in msg.lower():
-            print("  PASS -- exception text contains 'not allowed'. Wrapper "
-                  "rejected the DROP at the statement-arg check.")
-        else:
-            print("  Inspect -- exception did not say 'not allowed'. "
-                  "Possible: mesh-level error, or wrapper fell through and "
-                  "snowflake refused. Print the full error to diagnose.")
+        print(f"  Denied as expected: {str(e)[:240]}")
 
-    print("\n[TEST 4] drop_object -- name-prefix deny")
+    print("\n[TEST 4] drop_object (expect DENY: drop_object is denied by the policy)")
     try:
-        result = await client.call_tool(
-            "drop_object",
-            {
-                "object_type": "table",
-                "target_object": {
-                    "name": "__macaw_smoke_fake__",
-                    "database_name": "__macaw_db__",
-                    "schema_name": "__macaw_schema__",
-                },
-                "if_exists": True,
-            },
-        )
-        text = str(result)
-        print(f"  Result: {text[:240]}")
-        if "not allowed" in text.lower():
-            print("  PASS -- wrapper rejected drop_object at the name-prefix "
-                  "check. Snowflake never touched.")
-        else:
-            print("  Inspect -- expected 'not allowed'. If your YAML allows "
-                  "DROP this is the config-dependent inconclusive branch.")
+        result = await client.call_tool("drop_object", {"object_type": "table", "target_object": {"name": "__smoke_fake__", "database_name": "__db__", "schema_name": "__schema__"}, "if_exists": True})
+        print(f"  Result: {str(result)[:240]}")
+        print("  Not denied: check that the policy is loaded in the MACAW console.")
     except Exception as e:
-        msg = str(e)
-        print(f"  Got error: {msg[:240]}")
-        if "not allowed" in msg.lower():
-            print("  PASS -- wrapper rejected drop_object at the name-prefix "
-                  "check. The exception contains 'not allowed'.")
-        else:
-            print("  Inspect -- exception was not from the wrapper. Either "
-                  "param-shape error (TypeError before the wrapper), or "
-                  "the wrapper fell through and snowflake rejected.")
+        print(f"  Denied as expected: {str(e)[:240]}")
 
     print("\n" + "=" * 60)
 

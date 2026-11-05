@@ -139,7 +139,7 @@ async def get_db_connection() -> AsyncIterator[psycopg.AsyncConnection[dict[str,
 
 mcp = SecureMCP("securemcp-postgreSql")
 
-# Simple test resource to verify resources work
+# Server info resource
 @mcp.resource(
     "postgres://info",
 

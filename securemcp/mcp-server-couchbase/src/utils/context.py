@@ -1,14 +1,5 @@
 """
 Process-wide Couchbase cluster + app-context state.
-
-PORT NOTE -- FastMCP -> SecureMCP
-
-Original design:
-    Tools reached the cluster via:
-        ctx.request_context.lifespan_context.cluster
-    The AppContext dataclass was YIELDED by FastMCP's @asynccontextmanager
-    lifespan and threaded into every tool call through the Context object.
-
 """
 
 import logging
@@ -26,10 +17,6 @@ logger = logging.getLogger(f"{MCP_SERVER_NAME}.utils.context")
 @dataclass
 class AppContext:
     """Process-wide configuration flags.
-
-    PORT: previously yielded by the FastMCP lifespan into every tool call.
-    Now lives in the _APP_CONTEXT module global, populated by
-    initialize_app_context() at server startup.
     """
 
     read_only_mode: bool = True
@@ -63,9 +50,6 @@ def get_app_context() -> AppContext:
 
 def get_cluster_connection() -> Cluster:
     """Return the shared Couchbase cluster, building it on first call.
-
-    PORT: previously took (ctx: Context) and reached
-          ctx.request_context.lifespan_context.cluster.
     """
     global _CLUSTER
     if _CLUSTER is not None:

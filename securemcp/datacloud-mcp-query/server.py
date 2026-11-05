@@ -2,18 +2,7 @@ import logging
 import os
 from typing import Optional
 
-# PORT: legacy MCP-SDK FastMCP -> SecureMCP. Decorator surface (.tool
-# with description=) matches our usage; only the import flips.
-# from mcp.server.fastmcp import FastMCP
 from macaw_adapters.mcp import SecureMCP
-# PORT: pydantic.Field is dropped. SecureMCP's _extract_parameters
-# (mcp.py:837) treats param.default==inspect.Parameter.empty as the
-# only "required" signal, so a FieldInfo object reads as a non-empty
-# default and breaks both the schema and call-site (mcp.py:807 calls
-# func(**params); a missing kwarg falls back to the FieldInfo object,
-# not pydantic's resolved default). Plain Python defaults work
-# correctly. Per-arg descriptions move into the @mcp.tool docstring.
-# from pydantic import Field
 
 from auth_factory import create_auth_provider, AuthenticationError
 from connect_api_dc_sql import run_query
@@ -57,16 +46,6 @@ DATASPACE_FIELD_DESCRIPTION = "The Data Cloud dataspace name to execute against.
         "{\"query_timeout\": \"1800000ms\"}. Leave unset to use Data Cloud defaults."
     )
 )
-# PORT: pydantic Field -> plain Python defaults. sql had no default
-# in the original (Field with description only), so it stays required
-# (no default set). Per-arg descriptions are folded into the
-# @mcp.tool description above.
-# ORIGINAL:
-# async def query(
-#     sql: str = Field(description="..."),
-#     dataspace: str = Field(default="default", description=DATASPACE_FIELD_DESCRIPTION),
-#     query_settings: Optional[dict[str, str]] = Field(default=None, description="..."),
-# ):
 async def query(
     sql: str,
     dataspace: str = "default",
@@ -84,8 +63,6 @@ async def query(
         f"Args:\n  dataspace: {DATASPACE_FIELD_DESCRIPTION}"
     )
 )
-# PORT: Field default -> plain Python default.
-# ORIGINAL: dataspace: str = Field(default="default", description=DATASPACE_FIELD_DESCRIPTION)
 async def list_tables(
     dataspace: str = "default",
 ) -> list[str]:
@@ -107,10 +84,6 @@ async def list_tables(
         f"  dataspace: {DATASPACE_FIELD_DESCRIPTION}"
     )
 )
-# PORT: Field defaults -> plain Python. table stays required (no default).
-# ORIGINAL:
-#   table: str = Field(description="The table name"),
-#   dataspace: str = Field(default="default", description=DATASPACE_FIELD_DESCRIPTION),
 async def describe_table(
     table: str,
     dataspace: str = "default",

@@ -10,7 +10,7 @@ behaviour check that touches both the layout/render path and the
 state parser.
 
 Usage:
-    python client-test-macaw.py "Excalidraw Architect" <client_name>
+    python client-test-macaw.py "excalidraw-architect" <client_name>
 """
 
 import asyncio
@@ -20,7 +20,7 @@ import sys
 from macaw_adapters.mcp import Client
 
 
-SMOKE_FILE = "/tmp/excal_port_smoke.excalidraw"
+SMOKE_FILE = "excal_smoke.excalidraw"   # relative: the policy allows relative .excalidraw paths; run from the server folder
 
 SMOKE_MERMAID = """flowchart LR
     A[Frontend] --> B[API]
@@ -46,7 +46,7 @@ def get_server(client, name):
 
 async def main():
     if len(sys.argv) < 3:
-        print('Usage: python client-test-macaw.py "Excalidraw Architect" <client_name>')
+        print('Usage: python client-test-macaw.py "excalidraw-architect" <client_name>')
         sys.exit(1)
 
     name = sys.argv[1]
@@ -78,7 +78,7 @@ async def main():
     print("  PASS -- all 4 expected tools present")
 
     print("\n" + "=" * 60)
-    print("TEST 2: mermaid_to_excalidraw  (writes /tmp file)")
+    print("TEST 2: mermaid_to_excalidraw  (writes excal_smoke.excalidraw)")
     print("=" * 60)
     r2 = await client.call_tool(
         "mermaid_to_excalidraw",

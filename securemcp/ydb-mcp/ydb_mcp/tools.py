@@ -25,16 +25,10 @@ class YDBGenericTool(str, Enum):
     LIST_DIRECTORY = "ydb_list_directory"
     DESCRIBE_PATH = "ydb_describe_path"
 
-# TEXTCONTENT in not requreid MACAW -> json as result = {"result :"}
 def register_generic_tools(server: "YDBMCPServer", enabled: set[YDBGenericTool]) -> None:
     """Register the built-in YDB tools with the SecureMCP server.
 
     :param enabled: set of tools to register; empty set registers nothing.
-
-    PORT: was registering via server.add_tool(fn, name=..., description=...).
-    SecureMCP exposes only a decorator factory (.tool()), so we use the
-    decorator-as-function form server.mcp.tool(...)(fn). Tool bodies now
-    return bare strings; SecureMCP auto-wraps as {"result": <str>}.
     """
 
     async def ydb_query(sql: str) -> str:
@@ -114,7 +108,4 @@ def register_generic_tools(server: "YDBMCPServer", enabled: set[YDBGenericTool])
         (YDBGenericTool.DESCRIBE_PATH, ydb_describe_path, "Get detailed information about a YDB path"),
     ]:
         if tool in enabled:
-            # PORT: was server.add_tool(fn, name=..., description=...).
-            # SecureMCP exposes only the decorator-factory form, so we use
-            # the decorator-as-function: server.mcp.tool(...)(fn).
             server.mcp.tool(name=tool.value, description=description)(fn)
