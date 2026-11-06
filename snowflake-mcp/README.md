@@ -2,6 +2,20 @@
 >
 > Modified from [Snowflake-Labs/mcp](https://github.com/Snowflake-Labs/mcp), an open-source project by Snowflake Labs, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/snowflake-mcp
+
+claude mcp add snowflake-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -- /path/to/.venv/bin/mcp-server-snowflake --service-config-file /path/to/configuration.yaml
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Snowflake Cortex AI Model Context Protocol (MCP) Server
 
 <a href="https://emerging-solutions-toolbox.streamlit.app/">

@@ -2,6 +2,21 @@
 >
 > Modified from [ahnlabio/bicscan-mcp](https://github.com/ahnlabio/bicscan-mcp), an open-source project by AhnLab Blockchain Company, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/bicscan-mcp
+
+claude mcp add bicscan-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e BICSCAN_API_KEY=... \
+  -- /path/to/.venv/bin/bicscan-mcp
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # BICScan MCP Server
 A powerful and efficient Blockchain address risk scoring API MCP Server, leveraging the BICScan API to provide comprehensive risk assessments and asset information for blockchain addresses, domains, and decentralized applications (dApps).
 

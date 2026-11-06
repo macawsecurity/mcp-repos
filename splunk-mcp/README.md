@@ -2,6 +2,22 @@
 >
 > Modified from [livehybrid/splunk-mcp](https://github.com/livehybrid/splunk-mcp), an open-source project by LiveHybrid, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+# install this server's dependencies (see below)
+
+claude mcp add splunk-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e SPLUNK_HOST=... \
+  -e SPLUNK_TOKEN=... \
+  -- /path/to/.venv/bin/python /path/to/mcp-repos/splunk-mcp/splunk_mcp.py
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Splunk MCP (Model Context Protocol) Tool
 
 A FastMCP-based tool for interacting with Splunk Enterprise/Cloud through natural language. This tool provides a set of capabilities for searching Splunk data, managing KV stores, and accessing Splunk resources through an intuitive interface.

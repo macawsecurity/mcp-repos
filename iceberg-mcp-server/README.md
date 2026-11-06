@@ -2,6 +2,21 @@
 >
 > Modified from [cloudera/iceberg-mcp-server](https://github.com/cloudera/iceberg-mcp-server), an open-source project by Cloudera, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/iceberg-mcp-server
+
+claude mcp add iceberg-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e IMPALA_HOST=... \
+  -- /path/to/.venv/bin/run-server
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Cloudera Iceberg MCP Server (via Impala)
 
 This is a A Model Context Protocol server that provides read-only access to Iceberg tables via Apache Impala. This server enables LLMs to inspect database schemas and execute read-only queries.

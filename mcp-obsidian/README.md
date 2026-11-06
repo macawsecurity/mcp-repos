@@ -2,6 +2,21 @@
 >
 > Modified from [MarkusPfundstein/mcp-obsidian](https://github.com/MarkusPfundstein/mcp-obsidian), an open-source project by Markus Pfundstein, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/mcp-obsidian
+
+claude mcp add obsidian-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e OBSIDIAN_API_KEY=... \
+  -- /path/to/.venv/bin/mcp-obsidian
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # MCP server for Obsidian
 
 MCP server to interact with Obsidian via the Local REST API community plugin.

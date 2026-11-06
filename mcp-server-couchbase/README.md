@@ -2,6 +2,23 @@
 >
 > Modified from [couchbase/mcp-server-couchbase](https://github.com/couchbase/mcp-server-couchbase), an open-source project by Couchbase, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/mcp-server-couchbase
+
+claude mcp add couchbase-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e CB_CONNECTION_STRING=... \
+  -e CB_USERNAME=... \
+  -e CB_PASSWORD=... \
+  -- /path/to/.venv/bin/couchbase-mcp-server
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Couchbase MCP Server
 
 An [MCP](https://modelcontextprotocol.io/) server implementation of Couchbase that allows LLMs to directly interact with Couchbase clusters.

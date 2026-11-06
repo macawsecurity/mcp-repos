@@ -2,6 +2,20 @@
 >
 > Modified from [espressif/esp-rainmaker-mcp](https://github.com/espressif/esp-rainmaker-mcp), an open-source project by Espressif Systems, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+# install this server's dependencies (see below)
+
+claude mcp add esp-rainmaker-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -- /path/to/.venv/bin/python /path/to/mcp-repos/esp-rainmaker-mcp/server.py
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # ESP RainMaker MCP Server
 
 This project provides a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server wrapper around the [`esp-rainmaker-cli`](https://github.com/espressif/esp-rainmaker-cli) Python library.

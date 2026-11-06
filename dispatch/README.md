@@ -1,3 +1,5 @@
+> **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+
 # Dispatch Agents (operator) MCP — SecureMCPProxy
 
 Wraps `dispatch mcp serve operator` (installed with `uvx` from `datadog-labs/dispatch_agents_cli`, tag `v0.11.7`) over stdio. MACAW policy is enforced at the proxy before any call reaches the upstream.

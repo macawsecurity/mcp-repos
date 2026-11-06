@@ -2,6 +2,21 @@
 >
 > Modified from [CyprianFusi/MCP-server-postgres](https://github.com/CyprianFusi/MCP-server-postgres), an open-source project by Cyprian Fusi, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+# install this server's dependencies (see below)
+
+claude mcp add postgres-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e DATABASE_URL=postgresql://user:password@host:5432/db \
+  -- /path/to/.venv/bin/python /path/to/mcp-repos/MCP-server-postgres/main.py
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/CyprianFusi/MCP-server-postgres/main/assets/binati_logo.png" alt="BINATI AI Logo" width="75"/><strong></strong>
 

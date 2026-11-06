@@ -2,6 +2,23 @@
 >
 > Modified from [varunneal/spotify-mcp](https://github.com/varunneal/spotify-mcp), an open-source project by Varun Srivastava, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/spotify-mcp
+
+claude mcp add spotify-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e SPOTIFY_CLIENT_ID=... \
+  -e SPOTIFY_CLIENT_SECRET=... \
+  -e SPOTIFY_REDIRECT_URI=... \
+  -- /path/to/.venv/bin/spotify-mcp
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # spotify-mcp MCP server
 
 MCP project to connect Claude with Spotify. Built on top of [spotipy-dev's API](https://github.com/spotipy-dev/spotipy/tree/2.24.0).

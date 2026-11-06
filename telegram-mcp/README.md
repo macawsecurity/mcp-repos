@@ -2,6 +2,23 @@
 >
 > Modified from [chigwell/telegram-mcp](https://github.com/chigwell/telegram-mcp), an open-source project by Eugene Evstafev, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+# install this server's dependencies (see below)
+
+claude mcp add telegram-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e TELEGRAM_API_ID=... \
+  -e TELEGRAM_API_HASH=... \
+  -e TELEGRAM_SESSION_STRING=... \
+  -- /path/to/.venv/bin/python /path/to/mcp-repos/telegram-mcp/main.py
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=Telegram%20MCP%20Server&fontSize=50&fontAlignY=35&animation=fadeIn&fontColor=FFFFFF&descAlignY=55&descAlign=62" alt="Telegram MCP Server" width="100%" />
 </div>

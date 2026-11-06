@@ -1,3 +1,5 @@
+> **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+
 # Salesforce Agentforce MCP — SecureMCPProxy
 
 Wraps the Agentforce MCP server's own `server.py`, run from a local clone. MACAW policy is enforced at the proxy before any call reaches the upstream.

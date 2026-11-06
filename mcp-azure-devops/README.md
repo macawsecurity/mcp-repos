@@ -2,6 +2,22 @@
 >
 > Modified from [Vortiago/mcp-azure-devops](https://github.com/Vortiago/mcp-azure-devops), an open-source project by Vortiago, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/mcp-azure-devops
+
+claude mcp add azure-devops-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e AZURE_DEVOPS_PAT=... \
+  -e AZURE_DEVOPS_ORGANIZATION_URL=... \
+  -- /path/to/.venv/bin/mcp-azure-devops
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # MCP Azure DevOps Server
 
 > **⚠️ NOTICE: Official Server Available**

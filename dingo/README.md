@@ -1,3 +1,5 @@
+> **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+
 # Dingo MCP — SecureMCPProxy
 
 Wraps `mcp_server.py` from a clone of `MigoXLab/dingo` (run with `uv run`) over stdio. MACAW policy is enforced at the proxy before any call reaches the upstream.

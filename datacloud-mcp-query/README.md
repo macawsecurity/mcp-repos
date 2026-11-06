@@ -2,6 +2,22 @@
 >
 > Modified from [forcedotcom/datacloud-mcp-query](https://github.com/forcedotcom/datacloud-mcp-query), an open-source project by Salesforce, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+# install this server's dependencies (see below)
+
+claude mcp add datacloud-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e SF_CLIENT_ID=... \
+  -e SF_CLIENT_SECRET=... \
+  -- /path/to/.venv/bin/python /path/to/mcp-repos/datacloud-mcp-query/server.py
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Data 360 Query MCP Server
 
 This MCP server provides a seamless integration between Cursor and Salesforce Data Cloud (formerly known as CDP), allowing you to execute SQL queries directly from Cursor. The server handles OAuth authentication with Salesforce and provides tools for exploring and querying Data Cloud tables.

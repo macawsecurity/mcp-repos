@@ -2,6 +2,20 @@
 >
 > Modified from [BV-Venky/excalidraw-architect-mcp](https://github.com/BV-Venky/excalidraw-architect-mcp), an open-source project by Bhukya Venkatesh, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/excalidraw-architect-mcp
+
+claude mcp add excalidraw-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -- /path/to/.venv/bin/excalidraw-architect-mcp
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Excalidraw Architect MCP
 <!-- mcp-name: io.github.BV-Venky/excalidraw-architect-mcp -->
 [![PyPI](https://img.shields.io/pypi/v/excalidraw-architect-mcp)](https://pypi.org/project/excalidraw-architect-mcp/)

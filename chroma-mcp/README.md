@@ -2,6 +2,20 @@
 >
 > Modified from [chroma-core/chroma-mcp](https://github.com/chroma-core/chroma-mcp), an open-source project by Chroma, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/chroma-mcp
+
+claude mcp add chroma-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -- /path/to/.venv/bin/chroma-mcp
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 <p align="center">
   <a href="https://trychroma.com"><img src="https://user-images.githubusercontent.com/891664/227103090-6624bf7d-9524-4e05-9d2c-c28d5d451481.png" alt="Chroma logo"></a>
 </p>

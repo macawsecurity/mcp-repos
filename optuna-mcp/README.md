@@ -2,6 +2,20 @@
 >
 > Modified from [optuna/optuna-mcp](https://github.com/optuna/optuna-mcp), an open-source project by Optuna, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/optuna-mcp
+
+claude mcp add optuna-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -- /path/to/.venv/bin/optuna-mcp
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Optuna MCP Server
 
 [![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue)](https://www.python.org)

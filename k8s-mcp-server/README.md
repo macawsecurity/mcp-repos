@@ -2,6 +2,20 @@
 >
 > Modified from [alexei-led/k8s-mcp-server](https://github.com/alexei-led/k8s-mcp-server), an open-source project by Alexei Ledenev, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/k8s-mcp-server
+
+claude mcp add k8s-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -- /path/to/.venv/bin/python -m k8s_mcp_server
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # K8s MCP Server
 
 [![CI Status](https://github.com/alexei-led/k8s-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/alexei-led/k8s-mcp-server/actions/workflows/ci.yml)

@@ -1,3 +1,5 @@
+> **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+
 # Terraform MCP — SecureMCPProxy
 
 Wraps `hashicorp/terraform-mcp-server:1.3.0` in Docker over stdio. MACAW policy is enforced at the proxy before any call reaches the upstream.

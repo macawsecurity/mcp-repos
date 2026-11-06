@@ -2,6 +2,22 @@
 >
 > Modified from [ydb-platform/ydb-mcp](https://github.com/ydb-platform/ydb-mcp), an open-source project by YDB Platform, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/ydb-mcp
+
+claude mcp add ydb-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e YDB_ENDPOINT=... \
+  -e YDB_DATABASE=... \
+  -- /path/to/.venv/bin/ydb-mcp
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # YDB MCP
 ---
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/ydb-platform/ydb-mcp/blob/main/LICENSE)

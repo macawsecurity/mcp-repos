@@ -1,3 +1,5 @@
+> **SecureMCP:** This is an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
+
 # Azure MCP — SecureMCPProxy
 
 Wraps `npx -y @azure/mcp@4.0.0-beta.3 server start --mode all --read-only` over stdio. MACAW policy is enforced at the proxy before any call reaches the upstream.

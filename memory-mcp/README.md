@@ -2,6 +2,21 @@
 >
 > Modified from [mongodb-partners/memory-mcp](https://github.com/mongodb-partners/memory-mcp), an open-source project by MongoDB Partners, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+# install this server's dependencies (see below)
+
+claude mcp add memory-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e PYTHONPATH=/path/to/mcp-repos/memory-mcp \
+  -- /path/to/.venv/bin/python /path/to/mcp-repos/memory-mcp/src/server.py
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Memory-MCP Documentation
 
 ## Table of Contents

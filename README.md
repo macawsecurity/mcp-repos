@@ -1,8 +1,10 @@
 # MCP repos
 
-Popular MCP servers, secured with MACAW. Each folder holds a `SecureMCPProxy` that fronts the upstream MCP server unchanged, and a MAPL policy for it. MACAW checks every tool call against the policy before it reaches the upstream.
+Popular MCP servers, secured with MACAW, in two forms: proxies that front the upstream MCP server unchanged, and SecureMCP servers ported to run inside MACAW. Each folder has a MAPL policy, and MACAW checks every tool call against it.
 
-## Servers
+## Proxies
+
+> **SecureMCP:** These proxies are an experimental prototype for public review. Get in touch with the team at hello@macawsecurity.com.
 
 | Server | Folder |
 |---|---|

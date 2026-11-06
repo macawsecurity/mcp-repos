@@ -2,6 +2,24 @@
 >
 > Modified from [startreedata/mcp-pinot](https://github.com/startreedata/mcp-pinot), an open-source project by StarTree, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/mcp-pinot
+
+claude mcp add pinot-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e PINOT_BROKER_HOST=... \
+  -e PINOT_CONTROLLER_URL=... \
+  -- /path/to/.venv/bin/mcp-pinot
+```
+
+The table-operations server starts with `/path/to/.venv/bin/python -m mcp_pinot_ops.server` and `-e PYTHONPATH=/path/to/mcp-repos/mcp-pinot`.
+
+Add `Policy/serverA_pinot_query_policy_v0.2.0.json` (and `serverB_pinot_table_ops_policy_v0.2.0.json`) in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Pinot MCP Server
 
 ## Table of Contents

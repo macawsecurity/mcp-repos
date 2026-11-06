@@ -2,6 +2,23 @@
 >
 > Modified from [Jongryong/jira_reporter](https://github.com/Jongryong/jira_reporter), an open-source project by Jongryong, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+# install this server's dependencies (see below)
+
+claude mcp add jira-reporter-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e JIRA_URL=... \
+  -e JIRA_USERNAME=... \
+  -e JIRA_API_TOKEN=... \
+  -- /path/to/.venv/bin/python /path/to/mcp-repos/jira_reporter/jira_reporter_server.py
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Jira Weekly Reporter MCP Server
 
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)

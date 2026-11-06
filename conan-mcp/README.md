@@ -2,6 +2,20 @@
 >
 > Modified from [conan-io/conan-mcp](https://github.com/conan-io/conan-mcp), an open-source project by Conan.io, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/conan-mcp
+
+claude mcp add conan-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -- /path/to/.venv/bin/conan-mcp
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # Conan MCP Server
 
 A Model Context Protocol server for Conan package manager integration.

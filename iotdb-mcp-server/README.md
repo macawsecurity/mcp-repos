@@ -2,6 +2,21 @@
 >
 > Modified from [apache/iotdb-mcp-server](https://github.com/apache/iotdb-mcp-server), an open-source project by The Apache Software Foundation, to run on SecureMCP.
 
+## Use with Claude Code
+
+In a Python environment that has the MACAW client installed:
+
+```bash
+pip install -e /path/to/mcp-repos/iotdb-mcp-server
+
+claude mcp add iotdb-macaw --scope user \
+  -e MACAW_HOME=/path/to/macaw \
+  -e IOTDB_HOST=... \
+  -- /path/to/.venv/bin/iotdb-mcp-server
+```
+
+Add `Policy/server_policy_v0.2.0.json` in your MACAW console first; until a policy is loaded, every tool call is allowed.
+
 # IoTDB MCP Server
 
 [![smithery badge](https://smithery.ai/badge/@apache/iotdb-mcp-server)](https://smithery.ai/server/@apache/iotdb-mcp-server)
